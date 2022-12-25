@@ -1,4 +1,5 @@
 #include "read_config.h"
+#include "display.h"
 // #include "helper_functions.h"
 
 char config_file_name[] = "config.toml";
@@ -31,9 +32,15 @@ void setup() {
     scenes = load_config(config_file_name, &n_scenes);
 
     // print them
-    for (int i = 0; i < n_scenes; i++) {
-      print_scene(scenes[i]);
-    }
+    // for (int i = 0; i < n_scenes; i++) {
+    //   print_scene(scenes[i]);
+    // }
+
+    Serial.println("scenes loaded");
+
+    display_setup();
+    Serial.println("display init");
+    display_startup_splash();
 
     // stop, hammer time
     Serial.println();
