@@ -1,48 +1,5 @@
-#include "toml.h"
-#include <SD.h>
-#include <SPI.h>
-const int chipSelect = BUILTIN_SDCARD;
-
-char config_file_name[] = "config.toml";
-// TODO: hangs if you specify track numbers over this limit
-const int num_channels = 10;
-
-// testing configs
-// char config_file_name[] = "config_no_defaults.toml";
-// char config_file_name[] = "config_no_fixed.toml";
-// char config_file_name[] = "config_no_scenes.toml";
-// char config_file_name[] = "config_no_track_data.toml";
-// char config_file_name[] = "config_no_tracks.toml";
-
-
-// object to hold tracks
-struct Track {
-  char filename[50] {};
-  char name[50] {};
-  double gain {};
-  bool loop {};
-  bool play {};
-
-
-};
-
-// object to hold scenes
-struct Scene {
-  char name[50] {};
-  double gain {};
-  bool loop {};
-  bool play {};
-  struct Track track[num_channels];
-};
-
-// print out an error message and halt execution
-static void fatal(const char *msg, const char *msg1) {
-  Serial.println();
-  Serial.print("ERROR: ");
-  Serial.print(msg);
-  Serial.println(msg1);
-  while (1);
-}
+#include "read_config.h"
+#include "helper_functions.h"
 
 // return the number of keys in a table
 int size_of_toml_table(toml_table_t *table) {
@@ -53,37 +10,6 @@ int size_of_toml_table(toml_table_t *table) {
       }
   }
   return 0;
-}
-
-// print out a scene for debugging
-void print_scene(Scene input_scene) {
-    Serial.print("Scene: ");
-    Serial.println(input_scene.name);
-    Serial.print("Scene gain: ");
-    Serial.println(input_scene.gain);
-    Serial.print("Scene loop: ");
-    Serial.println(input_scene.loop);
-    Serial.print("Scene play: ");
-    Serial.println(input_scene.play);
-    Serial.println();
-
-    for (unsigned int i = 0; i < (sizeof(input_scene.track) / sizeof(input_scene.track[0])); i++) {
-      Serial.print("Track ");
-      Serial.println(i+1);
-
-      Serial.print("Filename: ");
-      Serial.println(input_scene.track[i].filename);
-      Serial.print("Name: ");
-      Serial.println(input_scene.track[i].name);
-      Serial.print("Gain: ");
-      Serial.println(input_scene.track[i].gain);
-      Serial.print("Loop: ");
-      Serial.println(input_scene.track[i].loop);
-      Serial.print("Play: ");
-      Serial.println(input_scene.track[i].play);
-      Serial.println();
-    }
-    Serial.println();
 }
 
 // print out track for debugging
@@ -101,6 +27,26 @@ void print_track(Track input_track) {
   Serial.println();
 }
 
+// print out a scene for debugging
+void print_scene(Scene input_scene) {
+    Serial.print("Scene: ");
+    Serial.println(input_scene.name);
+    Serial.print("Scene gain: ");
+    Serial.println(input_scene.gain);
+    Serial.print("Scene loop: ");
+    Serial.println(input_scene.loop);
+    Serial.print("Scene play: ");
+    Serial.println(input_scene.play);
+    Serial.println();
+
+    for (unsigned int i = 0; i < (sizeof(input_scene.track) / sizeof(input_scene.track[0])); i++) {
+      Serial.print("Track ");
+      Serial.println(i+1);
+      print_track(input_scene.track[i]);
+    }
+    Serial.println();
+}
+
 // extract all track data to a track object from a given toml track table
 Track extract_track_table(toml_table_t *input_table, double default_gain, bool default_loop, bool default_play) {
   Track track;
@@ -114,7 +60,7 @@ Track extract_track_table(toml_table_t *input_table, double default_gain, bool d
   // read in name, use filename if not given
   toml_datum_t fixed_track_name = toml_string_in(input_table, "name");
   if (!fixed_track_name.ok) {
-    strcpy(track.name, fixed_track_filename.u.s);
+    strcpy(track.name, fixed_track_filename.u.s); //TODO: find a way to trim off the file extension for the name
   }
   else{
     strcpy(track.name, fixed_track_name.u.s);
@@ -155,7 +101,7 @@ Track extract_track_table(toml_table_t *input_table, double default_gain, bool d
 Track extract_track_array(const char *input_filename, double default_gain, bool default_loop, bool default_play){
   Track track;
   strcpy(track.filename, input_filename);
-  strcpy(track.name, input_filename);
+  strcpy(track.name, input_filename); //TODO: find a way to trim off the file extension for the name
   track.gain = default_gain;
   track.loop = default_loop;
   track.play = default_play;
@@ -163,9 +109,9 @@ Track extract_track_array(const char *input_filename, double default_gain, bool 
 }
 
 // load all settings from the config file
-Scene *load_config(char filename[], int* n_scenes) {
+Scene *load_config(char config_filename[], int* n_scenes) {
   // first check if the file even exists
-  if (SD.exists(config_file_name)) {
+  if (SD.exists(config_filename)) {
     Serial.print("config found, ");
   }
   else {
@@ -176,7 +122,7 @@ Scene *load_config(char filename[], int* n_scenes) {
   File config_file;
 
   // read toml file
-  config_file = SD.open(filename, FILE_READ);
+  config_file = SD.open(config_filename, FILE_READ);
   if (!config_file) {
     fatal("cannot open config ", "");
   }
@@ -344,7 +290,7 @@ Scene *load_config(char filename[], int* n_scenes) {
         if (!track_key) break;
         toml_table_t *track_subtable = toml_table_in(track_table, track_key); // table with the track settings
         if (!track_subtable) fatal("No tracks found for scene ", scene_key); // hard exit if no tracks are given for scene
-        scene_array[i].track[j] = extract_track_table(track_subtable, scene_gain.u.d, scene_loop.u.b, scene_play.u.b);        
+        scene_array[i].track[j] = extract_track_table(track_subtable, scene_array[i].gain, scene_array[i].loop, scene_array[i].play);
       }
     }
     else {
@@ -352,7 +298,7 @@ Scene *load_config(char filename[], int* n_scenes) {
       for (int j = 0; ; j++){
         toml_datum_t track_attack = toml_string_at(tracks_array, j);
         if (!track_attack.ok) break;
-        scene_array[i].track[j] = extract_track_array(track_attack.u.s, scene_gain.u.d, scene_loop.u.b, scene_play.u.b);
+        scene_array[i].track[j] = extract_track_array(track_attack.u.s, scene_array[i].gain, scene_array[i].loop, scene_array[i].play);
         free(track_attack.u.s);
       }
     }
@@ -360,49 +306,13 @@ Scene *load_config(char filename[], int* n_scenes) {
     // load fixed tracks into scene, only if they are present
     if (fixed_table) {
       for (int k = 0; k < num_channels; k++) {
-        if (fixed_tracks[k].filename == false) continue;
-        scene_array[i].track[k] = fixed_tracks[k];
+        if (strlen(fixed_tracks[k].filename) > 0) {
+          scene_array[i].track[k] = fixed_tracks[k];
+        }
       }
     }
+
   }
   Serial.println();
   return scene_array;
 }
-
-void setup() {
-    Serial.begin(115200);
-
-    // wait for serial to open
-    while (!Serial) {
-
-    }
-
-    // set up SD card
-    Serial.println();
-    Serial.print("initializing SD card... ");
-  
-    if (!SD.begin(chipSelect)) {
-      Serial.println();
-      fatal("SD initialization failed", "");
-    }
-    Serial.println("done");
-  
-    // get array of scenes from the config
-    Scene *scenes; // array of scenes
-    int n_scenes = 0; // length of array of scenes
-    scenes = load_config(config_file_name, &n_scenes);
-    
-    for (int i = 0; i < n_scenes; i++) {
-      print_scene(scenes[i]);
-    }
-
-    // stop, hammer time
-    Serial.println();
-    Serial.println("#######");
-    Serial.println("# end #");
-    Serial.println("#######");
-    while (1);
-  
-}
-
-void loop() {}
