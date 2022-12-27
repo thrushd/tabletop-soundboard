@@ -1,5 +1,6 @@
 #include "read_config.h"
 #include "display.h"
+#include "hardware.h"
 // #include "helper_functions.h"
 
 char config_file_name[] = "config.toml";
@@ -11,7 +12,10 @@ char config_file_name[] = "config.toml";
 // char config_file_name[] = "config_no_tracks.toml";
 
 void setup() {
-    Serial.begin(115200);
+
+    pinMode(ENC_BUTTON_PIN, INPUT_PULLUP);
+
+    Serial.begin(9600);
 
     // wait for serial to open
     while (!Serial) {}
@@ -39,8 +43,9 @@ void setup() {
     Serial.println("scenes loaded");
 
     display_setup();
-    Serial.println("display init");
-    display_startup_splash();
+    // display_startup_splash();
+    // display_text_test();
+    display_encoder_test();
 
     // stop, hammer time
     Serial.println();
