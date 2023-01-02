@@ -1,12 +1,16 @@
+#pragma once
+
 #include <Arduino.h>
 #include <SD.h>
 #include <SPI.h>
+#include <Audio.h>
+#include <Wire.h>
+#include <SerialFlash.h>
 #include "toml.h"
-
 
 const int chipSelect = BUILTIN_SDCARD;
 // TODO: hangs if you specify track numbers over this limit
-const int num_channels = 10;
+const int num_channels = 8;
 
 // object to hold tracks
 struct Track {

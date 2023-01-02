@@ -51,11 +51,9 @@ void display_text_test() {
   while(1);
 }
 
+
 int window_pos = 0; // position of the window in the array, defined as the minimum
 int cursor_pos = 0; // position of the cursor in the displayed scenes
-int curr_active_scene = 0; // the active scene
-int last_active_scene = -1;
-
 // updates main display scenes
 void update_main_display(String scene_names[], int selection, int current_scene){
   // clear and set text parameters
@@ -91,6 +89,9 @@ void update_main_display(String scene_names[], int selection, int current_scene)
 }
 
 void display_encoder_test() {
+
+  int curr_active_scene = 0; // the active scene
+  int last_active_scene = -1; // the one before that
   
   String scenerenos[8] = {
     "Moutains",
