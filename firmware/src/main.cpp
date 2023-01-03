@@ -68,7 +68,7 @@ void setup() {
     Wire.begin();
     AudioMemory(15);
     // wait for serial to open
-    while (!Serial) {}
+    // while (!Serial) {}
 
     // set up SD card
     Serial.println();
@@ -98,15 +98,21 @@ void setup() {
 
     Serial.println("starting");
 
-    Track tracks[] = {{"SDTEST5.WAV", "Test 1", 1.5, false, false},
-                      {"SDTEST6.WAV", "Test 2", 1.5, true, false},
-                      {"SDTEST3.WAV", "Test 3", 1.5, false, true},
-                      {"SDTEST4.WAV", "Test 4", 1.5, true, true}};
+    Track tracks[] = {{"SDTEST1.WAV", "Spooky", 1.57, false, false},
+                      {"SDTEST6.WAV", "Bang", 1.0, false, false},
+                      {"SDTEST3.WAV", "Piano", 0.5, false, false},
+                      {"SDTEST4.WAV", "Chill", 1.2, false, false}};
 
     Module mod_1(0, 33, tracks, &play_sd_wav_1, 0, &Wire);
+    Module mod_2(1, 34, tracks, &play_sd_wav_2, 0, &Wire);
+    Module mod_3(2, 35, tracks, &play_sd_wav_3, 0, &Wire);
+    Module mod_4(3, 36, tracks, &play_sd_wav_4, 0, &Wire);
     
     while(1) {
-      mod_1.update(1);
+      mod_1.update(0);
+      mod_2.update(1);
+      mod_3.update(2);
+      mod_4.update(3);
     }
 
     // // stop, hammer time
