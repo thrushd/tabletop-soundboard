@@ -58,6 +58,7 @@ AudioConnection          patchCord22(left_final_mixer, 0, pt8211_1, 0);
 
 #define CHIP_SELECT    BUILTIN_SDCARD
 
+Encoder knobbo(35, 36);
 
 void setup() {
 
@@ -98,21 +99,21 @@ void setup() {
 
     Serial.println("starting");
 
-    Track tracks[] = {{"SDTEST1.WAV", "Spooky", 1.57, false, false},
-                      {"SDTEST6.WAV", "Bang", 1.0, false, false},
-                      {"SDTEST3.WAV", "Piano", 0.5, false, false},
-                      {"SDTEST4.WAV", "Chill", 1.2, false, false}};
+    Track tracks[] = {{"SDTEST2.WAV", "Spooky", 0.5, false, false},
+                      {"SDTEST3.WAV", "Bang Time", 1.0, false, false},
+                      {"SDTEST4.WAV", "Ouch", 0.5, false, false},
+                      {"SDTEST4.WAV", "Chilling Outside", 1.2, false, false}};
 
-    Module mod_1(0, 33, tracks, &play_sd_wav_1, 0, &Wire);
-    Module mod_2(1, 34, tracks, &play_sd_wav_2, 0, &Wire);
-    Module mod_3(2, 35, tracks, &play_sd_wav_3, 0, &Wire);
-    Module mod_4(3, 36, tracks, &play_sd_wav_4, 0, &Wire);
+    Module mod_1(0, 33, tracks, &play_sd_wav_0, &left_mixer_0, &right_mixer_0, &Wire, &knobbo);
+    Module mod_2(1, 34, tracks, &play_sd_wav_1, &left_mixer_0, &right_mixer_0, &Wire, &knobbo);
+    // Module mod_3(2, 35, tracks, &play_sd_wav_3, 0, &Wire);
+    // Module mod_4(3, 36, tracks, &play_sd_wav_4, 0, &Wire);
     
     while(1) {
       mod_1.update(0);
       mod_2.update(1);
-      mod_3.update(2);
-      mod_4.update(3);
+      // mod_3.update(2);
+      // mod_4.update(3);
     }
 
     // // stop, hammer time

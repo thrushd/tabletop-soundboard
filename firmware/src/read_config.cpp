@@ -41,6 +41,7 @@
 // AudioConnection          patchCord22(left_final_mixer, 0, pt8211_1, 0);
 // // GUItool: end automatically generated code
 
+// TODO gain is now from 0-1
 
 // return the number of keys in a table
 int size_of_toml_table(toml_table_t *table) {
