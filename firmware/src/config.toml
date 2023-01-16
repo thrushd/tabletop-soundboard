@@ -1,0 +1,52 @@
+# Default Settings
+[default]
+gain = 0.5
+loop = false
+play = false
+
+# Create fixed tracks that don't change depending on which scene you are in
+# If track.n is declared in a scene it is ignored and overriden with the below items
+[fixed.7]
+filename = "dj_airhorn.wav"
+name = "Nat 20"
+gain = 1.0
+[fixed.8]
+filename = "sad_trombone.wav"
+name = "Nat 1"
+gain = 1.0
+
+[scenes.tavern]
+name = "Old Ivey Tavern"  # rename the scene if desired
+[tavern.1]  # add a track
+filename = "tavern_sounds_1.wav"  # specify the filename
+name = "Tavern Sounds"  # change the displayed name if you want
+play = true  # set if it should play on scene start
+loop = true  # set if the track should loop or not
+gain = 0.5  # set a non default volume gain
+[tavern.2]  # add another track
+filename = "piano_3.wav"
+name = "Piano"
+play = true
+gain = 0.75
+[tavern.3]  # this track is fine with all of the default settings, no need to override
+filename = "bang.wav"
+
+[scenes.camp]
+gain = 1.0
+[camp.1]
+filename = "wolf_howl.wav"
+[camp.2]
+filename = "wind.wav"
+gain = 0.5
+loop = true
+play = true
+[camp.3]
+filename = "crackling_campfire.wav"
+gain = 0.75
+loop = true
+play = true
+
+# If defalt settings are fine it can get very minimal, just a list of the file names
+[scenes.mountain]
+loop = true
+tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
