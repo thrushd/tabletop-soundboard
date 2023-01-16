@@ -4,10 +4,10 @@
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
 #include <Audio.h>
-#include <Bounce2.h>
 #include <Encoder.h>
 #include <OneButton.h>
 #include <Wire.h>
+#include "track.h"
 
 // #include "read_config.h"
 
@@ -20,14 +20,6 @@
 
 #define TCA_ADDR 0x70 // address of i2c multiplexer chip
 
-// object to hold tracks
-struct Track {
-    char filename[50] {};
-    char name[50] {};
-    double gain {};
-    bool loop {};
-    bool play {};
-};
 
 class Module {
 public:
