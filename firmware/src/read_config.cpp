@@ -1,8 +1,6 @@
 #include "read_config.h"
 #include "helper_functions.h"
 
-// TODO gain is now from 0-1
-
 // return the number of keys in a table
 int size_of_toml_table(toml_table_t* table)
 {
@@ -102,7 +100,7 @@ Track extract_track_array(String input_filename, double default_gain, bool defau
 {
     Track track;
     track.filename = input_filename;
-    track.name = input_filename; // TODO: find a way to trim off the file extension for the name
+    track.name = input_filename.substring(0, strlen(input_filename.c_str())-4);
     track.gain = default_gain;
     track.loop = default_loop;
     track.play = default_play;
@@ -186,7 +184,7 @@ void load_config(String config_filename, String* scene_names, Track** module_tra
     // traverse and extract any fixed tracks
     // arrays need to be outside and fixed size because dumb
     // TODO: make not dumb
-    Track fixed_tracks[num_channels];
+    Track fixed_tracks[n_modules];
     toml_table_t* fixed_table = toml_table_in(conf, "fixed");
     if (fixed_table) {
         // fixed tracks present, get em

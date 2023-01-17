@@ -21,25 +21,27 @@ void SoundBoard::init()
 
     // set up SD card
     Serial.print("initializing SD card... ");
-  
+
     if (!SD.begin(CHIP_SELECT)) {
-      Serial.println();
-      Serial.println("SD initialization failed");
-      while(1);
+        Serial.println();
+        Serial.println("SD initialization failed");
+        while (1) { }
     }
     Serial.println("done");
+
+    // read config file
 
     // init display
     main_display = new Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
     main_display->init(MAIN_SCREEN_WIDTH, MAIN_SCREEN_HEIGHT);
-    // main_display->fillScreen(ST77XX_CYAN);
 
-    // init gifplayer
-    // gif_player = new GifPlayer("STARTUP.GIF", main_display);
-    // gif_player->init();
-    // while (1) {
-    //     gif_player->play();
-    // }
+    // init gifplayer and play the startup animation
+    init_player(main_display);
+    play_gif("STARTUP.GIF");
+    play_gif("STARTUP_1.GIF");
+    
+    main_display->fillScreen(ST77XX_CYAN);
+    while (1) { }
 
     // Module mod_1(0, 33, tracks, &play_sd_wav_0, &left_mixer_0, &right_mixer_0, &Wire, &knobbo);
 }

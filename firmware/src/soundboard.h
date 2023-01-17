@@ -9,7 +9,7 @@
 #include <SD.h>
 #include <SPI.h>
 #include <SerialFlash.h>
-#include "display_gif.h"
+#include "gif_player.h"
 #include "module.h"
 
 #define MAIN_SCREEN_WIDTH 240 // display width, in pixels

@@ -4,6 +4,9 @@ gain = 0.5
 loop = false
 play = false
 
+[gifs]
+startup = "startup.gif"
+
 # Create fixed tracks that don't change depending on which scene you are in
 # If track.n is declared in a scene it is ignored and overriden with the below items
 [fixed.7]
