@@ -1,6 +1,9 @@
 #include "read_config.h"
 #include "helper_functions.h"
 
+// TODO: hangs if you specify track numbers over this limit
+const int n_modules = 8;
+
 // return the number of keys in a table
 int size_of_toml_table(toml_table_t* table)
 {
@@ -29,27 +32,8 @@ void print_track(Track input_track)
     Serial.println();
 }
 
-// print out a scene for debugging
-// void print_scene(Scene input_scene) {
-//     Serial.print("Scene: ");
-//     Serial.println(input_scene.name);
-//     Serial.print("Scene gain: ");
-//     Serial.println(input_scene.gain);
-//     Serial.print("Scene loop: ");
-//     Serial.println(input_scene.loop);
-//     Serial.print("Scene play: ");
-//     Serial.println(input_scene.play);
-//     Serial.println();
-//     for (unsigned int i = 0; i < (sizeof(input_scene.track) / sizeof(input_scene.track[0])); i++) {
-//       Serial.print("Track ");
-//       Serial.println(i+1);
-//       print_track(input_scene.track[i]);
-//     }
-//     Serial.println();
-// }
-
-// extract all track data to a track object from a given toml track table
-Track extract_track_table(toml_table_t* input_table, double default_gain, bool default_loop, bool default_play)
+// extract all track data to a track object from a given toml track table, using defaults if no settings present
+Track table_to_track(toml_table_t* input_table, double default_gain, bool default_loop, bool default_play)
 {
     Track track;
     // read in filename, this is the only required attribute, so hard fail if it's not here
@@ -96,19 +80,19 @@ Track extract_track_table(toml_table_t* input_table, double default_gain, bool d
 }
 
 // make a track object with only a filename and defaults
-Track extract_track_array(String input_filename, double default_gain, bool default_loop, bool default_play)
-{
-    Track track;
-    track.filename = input_filename;
-    track.name = input_filename.substring(0, strlen(input_filename.c_str())-4);
-    track.gain = default_gain;
-    track.loop = default_loop;
-    track.play = default_play;
-    return track;
-}
+// Track extract_track_array(String input_filename, double default_gain, bool default_loop, bool default_play)
+// {
+//     Track track;
+//     track.filename = input_filename;
+//     track.name = input_filename.substring(0, strlen(input_filename.c_str()) - 4);
+//     track.gain = default_gain;
+//     track.loop = default_loop;
+//     track.play = default_play;
+//     return track;
+// }
 
 // load all settings from the config file
-void load_config(String config_filename, String* scene_names, Track** module_tracks)
+void load_config(String config_filename, String *scene_names, Track** module_tracks, String &gif_name)
 {
     // first check if the file even exists
     if (SD.exists(config_filename.c_str())) {
@@ -181,9 +165,17 @@ void load_config(String config_filename, String* scene_names, Track** module_tra
         fatal("missing default gain", "");
     double default_gain = default_gain_datum.u.d;
 
+    // extract the gif name
+    toml_table_t* gif_table = toml_table_in(conf, "gifs");
+    if (gif_table){
+        toml_datum_t startup_gif_toml = toml_string_in(gif_table, "startup");
+        if (startup_gif_toml.ok){
+            gif_name = startup_gif_toml.u.s;
+        }
+    }
+
     // traverse and extract any fixed tracks
     // arrays need to be outside and fixed size because dumb
-    // TODO: make not dumb
     Track fixed_tracks[n_modules];
     toml_table_t* fixed_table = toml_table_in(conf, "fixed");
     if (fixed_table) {
@@ -194,12 +186,18 @@ void load_config(String config_filename, String* scene_names, Track** module_tra
         Serial.println(" fixed tracks");
 
         // populate array
-        for (int i = 0;; i++) {
+        for (int i = 0; ; i++) {
             const char* key = toml_key_in(fixed_table, i);
-            if (!key)
+            if (!key){
                 break;
+            }
+            // error check the track number that was entered
+            if (atoi(key) > n_modules){
+                fatal("fixed track number exeeds number of modules", "");
+            }
+            // extract table and get track
             toml_table_t* fixed_subtable = toml_table_in(fixed_table, key);
-            fixed_tracks[atoi(key) - 1] = extract_track_table(fixed_subtable, default_gain, default_loop, default_play);
+            fixed_tracks[atoi(key) - 1] = table_to_track(fixed_subtable, default_gain, default_loop, default_play);
         }
     } else {
         Serial.println("no fixed tracks found");
@@ -213,85 +211,69 @@ void load_config(String config_filename, String* scene_names, Track** module_tra
 
     // yo how many scenes we got
     int n_scenes = size_of_toml_table(scenes_table);
-    
+
     // allocate for scene names
-    scene_names = (String*)malloc(n_scenes * sizeof(String));
+    // scene_names = (String*)calloc(n_scenes, sizeof(String));
+    scene_names = new String [n_scenes];
 
     // allocate for track array
-    module_tracks = (Track**)malloc(n_scenes * sizeof(Track*));
-    
-    for (int i = 0; i < n_scenes; i++) {
-        module_tracks[i] = (Track*)malloc(n_modules * sizeof(Track));
+    module_tracks = (Track**)calloc(n_modules, sizeof(Track*));
+    for (int i = 0; i < n_modules; i++) {
+        module_tracks[i] = (Track*)calloc(n_scenes, sizeof(Track));
     }
 
     Serial.print("found ");
     Serial.print(n_scenes);
     Serial.println(" scenes");
 
-    module_tracks[0][0] = Track{String("filename.wav"), String("name"), 1.0, false, false};
+    // how to write to one of the tracks
+    // module_tracks[0][0] = Track{String("filename.wav"), String("name"), 1.0, false, false};
 
-    // loop through all scenes to load them and their tracks into the array of scenes
-    /* the chungus has arrived
-    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣧⠀⠀⠀⠀⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣧⠀⠀⠀⢰⡿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡟⡆⠀⠀⣿⡇⢻⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⣿⠀⢰⣿⡇⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡄⢸⠀⢸⣿⡇⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⡇⢸⡄⠸⣿⡇⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣿⢸⡅⠀⣿⢠⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣥⣾⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⡿⡿⣿⣿⡿⡅⠀⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠉⠀⠉⡙⢔⠛⣟⢋⠦⢵⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣄⠀⠀⠁⣿⣯⡥⠃⠀⢳⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⡇⠀⠀⠀⠐⠠⠊⢀⠀⢸⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⡿⠀⠀⠀⠀⠀⠈⠁⠀⠀⠘⣿⣄⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⣠⣿⣿⣿⣿⣿⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣷⡀⠀⠀⠀
-  ⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣧⠀⠀
-  ⠀⠀⠀⡜⣭⠤⢍⣿⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⢛⢭⣗⠀
-  ⠀⠀⠀⠁⠈⠀⠀⣀⠝⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⠠⠀⠀⠰⡅
-  ⠀⠀⠀⢀⠀⠀⡀⠡⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠔⠠⡕⠀
-  ⠀⠀⠀⠀⣿⣷⣶⠒⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠘⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⠀⠀⠀⠀⠀
-  ⠀⠀⠀⠀⠀⠈⢿⣿⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠊⠉⢆⠀⠀⠀⠀
-  ⠀⢀⠤⠀⠀⢤⣤⣽⣿⣿⣦⣀⢀⡠⢤⡤⠄⠀⠒⠀⠁⠀⠀⠀⢘⠔⠀⠀⠀⠀
-  ⠀⠀⠀⡐⠈⠁⠈⠛⣛⠿⠟⠑⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-  ⠀⠀⠉⠑⠒⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-    */
-    // for each scene
+    // loop through all scenes to load them and their tracks into the array
     for (int i = 0;; i++) {
+        // for each scene
         const char* scene_key = toml_key_in(scenes_table, i); // this will be the toml name of the scene ("tavern", "camp", etc)
         if (!scene_key)
             break;
+
         toml_table_t* scene_subtable = toml_table_in(scenes_table, scene_key); // this will be used to extract all the scene specific settings
 
-        // get scene details and defaults
+        // get scene names
         toml_datum_t scene_name = toml_string_in(scene_subtable, "name");
         if (!scene_name.ok) {
-            scene_array[i].name = scene_key;
+            scene_names[i] = scene_key;
         } else {
-            scene_array[i].name = scene_name.u.s;
+            scene_names[i] = scene_name.u.s;
             free(scene_name.u.s);
         }
-        toml_datum_t scene_gain = toml_double_in(scene_subtable, "gain");
-        if (!scene_gain.ok) {
-            scene_array[i].gain = default_gain;
-        } else {
-            scene_array[i].gain = scene_gain.u.d;
-        }
-        toml_datum_t scene_loop = toml_bool_in(scene_subtable, "loop");
-        if (!scene_loop.ok) {
-            scene_array[i].loop = default_loop;
-        } else {
-            scene_array[i].loop = scene_loop.u.b;
-        }
-        toml_datum_t scene_play = toml_bool_in(scene_subtable, "play");
-        if (!scene_play.ok) {
-            scene_array[i].play = default_play;
-        } else {
-            scene_array[i].play = scene_play.u.b;
-        }
 
+        Serial.println(scene_names[i]);
+
+        // get scene defaults
+        double scene_gain = 0;
+        bool scene_loop = false;
+        bool scene_play = false;
+
+        toml_datum_t scene_gain_toml = toml_double_in(scene_subtable, "gain");
+        if (!scene_gain_toml.ok) {
+            scene_gain = default_gain;
+        } else {
+            scene_gain = scene_gain_toml.u.d;
+        }
+        toml_datum_t scene_loop_toml = toml_bool_in(scene_subtable, "loop");
+        if (!scene_loop_toml.ok) {
+            scene_loop = default_loop;
+        } else {
+           scene_loop = scene_loop_toml.u.b;
+        }
+        toml_datum_t scene_play_toml = toml_bool_in(scene_subtable, "play");
+        if (!scene_play_toml.ok) {
+            scene_play = default_play;
+        } else {
+            scene_play = scene_play_toml.u.b;
+        }
+    
+        // get array called 'tracks' in the scene subtable
         toml_array_t* tracks_array = toml_array_in(scene_subtable, "tracks");
         if (!tracks_array) {
             // minimal track array not found, loop through track keys to get values
@@ -300,33 +282,37 @@ void load_config(String config_filename, String* scene_names, Track** module_tra
             for (int j = 0;; j++) {
                 // TODO: if no tracks are defined in the config program will just hang here, should have a way to error handle this
                 const char* track_key = toml_key_in(track_table, j); // this will be the toml track number ("1", "2", "3", etc)
+                // exit if we run out
                 if (!track_key)
                     break;
+                // get a table with the track settings
                 toml_table_t* track_subtable = toml_table_in(track_table, track_key); // table with the track settings
                 if (!track_subtable)
                     fatal("No tracks found for scene ", scene_key); // hard exit if no tracks are given for scene
-                scene_array[i].track[j] = extract_track_table(track_subtable, scene_array[i].gain, scene_array[i].loop, scene_array[i].play);
+                // load the track object into the array
+                module_tracks[j][i] = table_to_track(track_subtable, scene_gain, scene_loop, scene_play);
             }
         } else {
             // track array is present, so use that to load in all the tracks
             for (int j = 0;; j++) {
-                toml_datum_t track_attack = toml_string_at(tracks_array, j);
-                if (!track_attack.ok)
+                toml_datum_t track_array = toml_string_at(tracks_array, j);
+                if (!track_array.ok)
                     break;
-                scene_array[i].track[j] = extract_track_array(track_attack.u.s, scene_array[i].gain, scene_array[i].loop, scene_array[i].play);
-                free(track_attack.u.s);
+                module_tracks[j][i] = Track{track_array.u.s, track_array.u.s, scene_gain, scene_loop, scene_play};
+                free(track_array.u.s);
             }
         }
 
-        // load fixed tracks into scene, only if they are present
-        if (fixed_table) {
-            for (int k = 0; k < num_channels; k++) {
-                if (strlen(fixed_tracks[k].filename) > 0) {
-                    scene_array[i].track[k] = fixed_tracks[k];
-                }
+        // if there is no fixed table we can exit now
+        if (!fixed_table) {
+            break;
+        }
+        // otherwise we need to load the fixed tracks into the array
+        for (int k = 0; k < n_modules; k++) {
+            if (fixed_tracks[k].filename.length() > 0) {
+                module_tracks[k][i] = fixed_tracks[k];
             }
         }
     }
-    Serial.println();
-    return scene_array;
+    return;
 }

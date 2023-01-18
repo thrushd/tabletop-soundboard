@@ -14,8 +14,11 @@ Want:
         ["Camp", "Tavern", "Mountains", ...]
 
     2d array of tracks grouped by scene
-        [[S1T1, S2T1, S3T1, S4T1, ...],
-         [S1T2, S2T2, S3T2, S4T2, ...],
-         [S1T3, S2T3, S3T3, S4T3, ...]]
+    row, column
+    tracks, scenes
+    j, i
+        [[T1S1, T1S2, T1S3, T1S4, ...],
+         [T2S1, T2S2, T2S3, T2S4, ...],
+         [T3S1, T3S2, T3S3, T3S4, ...]]
             
 - Also need logic for a module object handling an empty track 
