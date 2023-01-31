@@ -12,4 +12,4 @@
 
 void print_track(Track input_track);
 
-void load_config(String config_filename, String * scene_names, Track ** module_tracks, String &gif_name);
+void load_config(char* config_filename, char** scene_names, Track** module_tracks, char* gif_name);

@@ -1,6 +1,7 @@
 #include "read_config.h"
 #include "helper_functions.h"
 
+
 // TODO: hangs if you specify track numbers over this limit
 const int n_modules = 8;
 
@@ -41,14 +42,15 @@ Track table_to_track(toml_table_t* input_table, double default_gain, bool defaul
     if (!fixed_track_filename.ok) {
         fatal("Cannot find fixed track filename", "");
     }
-    track.filename = fixed_track_filename.u.s;
+    memcpy(track.filename, fixed_track_filename.u.s, MAX_CHAR);
 
     // read in name, use filename if not given
     toml_datum_t fixed_track_name = toml_string_in(input_table, "name");
     if (!fixed_track_name.ok) {
-        track.name = fixed_track_filename.u.s; // TODO: find a way to trim off the file extension for the name
+        // TODO: find a way to trim off the file extension for the name
+        memcpy(track.name, fixed_track_filename.u.s, MAX_CHAR);
     } else {
-        track.name = fixed_track_name.u.s;
+        memcpy(track.name, fixed_track_name.u.s, MAX_CHAR);
         free(fixed_track_name.u.s);
     }
     free(fixed_track_filename.u.s);
@@ -92,10 +94,10 @@ Track table_to_track(toml_table_t* input_table, double default_gain, bool defaul
 // }
 
 // load all settings from the config file
-void load_config(String config_filename, String *scene_names, Track** module_tracks, String &gif_name)
+void load_config(char* config_filename, char** scene_names, Track** module_tracks, char* gif_name)
 {
     // first check if the file even exists
-    if (SD.exists(config_filename.c_str())) {
+    if (SD.exists(config_filename)) {
         Serial.print("config found, ");
     } else {
         fatal("config not found", "");
@@ -105,7 +107,7 @@ void load_config(String config_filename, String *scene_names, Track** module_tra
     File config_file;
 
     // read toml file
-    config_file = SD.open(config_filename.c_str(), FILE_READ);
+    config_file = SD.open(config_filename, FILE_READ);
     if (!config_file) {
         fatal("cannot open config ", "");
     }
@@ -213,8 +215,10 @@ void load_config(String config_filename, String *scene_names, Track** module_tra
     int n_scenes = size_of_toml_table(scenes_table);
 
     // allocate for scene names
-    // scene_names = (String*)calloc(n_scenes, sizeof(String));
-    scene_names = new String [n_scenes];
+    scene_names = (char**)calloc(n_scenes, sizeof(char*));
+    for (int i = 0; i < n_scenes; i++){
+        scene_names[i] = (char*)calloc(1, MAX_CHAR);
+    }
 
     // allocate for track array
     module_tracks = (Track**)calloc(n_modules, sizeof(Track*));
@@ -241,9 +245,9 @@ void load_config(String config_filename, String *scene_names, Track** module_tra
         // get scene names
         toml_datum_t scene_name = toml_string_in(scene_subtable, "name");
         if (!scene_name.ok) {
-            scene_names[i] = scene_key;
+            memcpy(scene_names[i], scene_key, MAX_CHAR);
         } else {
-            scene_names[i] = scene_name.u.s;
+            memcpy(scene_names[i], scene_name.u.s, MAX_CHAR);
             free(scene_name.u.s);
         }
 

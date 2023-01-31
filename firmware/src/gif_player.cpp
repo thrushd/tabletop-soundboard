@@ -146,10 +146,10 @@ void GIFDraw(GIFDRAW* pDraw)
     }
 } /* GIFDraw() */
 
-void play_gif(String gif_file_name)
+void play_gif(char *gif_file_name)
 {
-    Serial.printf("Opening %s, ", gif_file_name.c_str());
-    if (gif.open(gif_file_name.c_str(), GIFOpenFile, GIFCloseFile, GIFReadFile, GIFSeekFile, GIFDraw)) {
+    Serial.printf("Opening %s, ", gif_file_name);
+    if (gif.open(gif_file_name, GIFOpenFile, GIFCloseFile, GIFReadFile, GIFSeekFile, GIFDraw)) {
         Serial.printf("success! Canvas size = %d x %d\n", gif.getCanvasWidth(), gif.getCanvasHeight());
         // fun info
         // GIFINFO gi;

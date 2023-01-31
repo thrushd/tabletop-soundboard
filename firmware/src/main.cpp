@@ -8,7 +8,7 @@
 // char config_file_name[] = "config_no_track_data.toml";
 // char config_file_name[] = "config_no_tracks.toml";
 
-String config_file_name = "config.toml";
+char config_file_name[] = {"config.toml"};
 
 
 void setup()

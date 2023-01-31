@@ -40,7 +40,7 @@ AudioConnection          patchCord21(right_final_mixer, 0, pt8211_1, 1);
 AudioConnection          patchCord22(left_final_mixer, 0, pt8211_1, 0);
 // GUItool: end automatically generated code
 
-SoundBoard::SoundBoard(String config_file_name)
+SoundBoard::SoundBoard(char *config_file_name)
 {
     this->config_file_name = config_file_name;
     init();
@@ -72,7 +72,7 @@ void SoundBoard::init()
     // read config file
     load_config(config_file_name, scene_names, module_tracks, startup_gif_filename);
     
-    Serial.printf("Scene: %s\n", scene_names[0].c_str());
+    Serial.printf("Scene: %s\n", scene_names[0]);
     
 
     // init display
@@ -99,9 +99,6 @@ void SoundBoard::process_single()
     Serial.println("Encoder single click");
 }
 
-void SoundBoard::display_startup_splash()
-{
-}
 
 /*
 

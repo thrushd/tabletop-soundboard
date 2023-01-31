@@ -28,11 +28,11 @@
 
 class SoundBoard {
 public:
-    SoundBoard(String config_file_name);
+    SoundBoard(char *config_file_name);
     void update();
 
 private:
-    String config_file_name;
+    char config_file_name[MAX_CHAR];
     Adafruit_ST7789* main_display;
     OneButton button;
     Encoder* knob;
@@ -40,9 +40,11 @@ private:
     int cursor_pos = 0; // position of the cursor in the displayed scenes
     int active_scene = 0; // the current active scene
 
-    String * scene_names;
+    char** scene_names[MAX_CHAR];
     Track** module_tracks;
-    String startup_gif_filename;
+    char startup_gif_filename[MAX_CHAR];
+
+    // std::vector<String> scene_names;
 
     // GifPlayer* gif_player;
 
@@ -55,8 +57,6 @@ private:
     void process_single();
     void process_double();
     void process_hold();
-
-    void display_startup_splash();
 };
 
 /*
