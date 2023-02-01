@@ -41,6 +41,7 @@ private:
     int active_scene = 0; // the current active scene
 
     char* scene_names[MAX_CHAR];
+    int n_scenes;
     Track** module_tracks;
     char startup_gif_filename[MAX_CHAR];
 

@@ -94,7 +94,7 @@ Track table_to_track(toml_table_t* input_table, double default_gain, bool defaul
 // }
 
 // load all settings from the config file
-void load_config(char* config_filename, char** scene_names, Track** module_tracks, char* gif_name)
+void load_config(char* config_filename, char** scene_names, int* n_scenes_ptr, Track** module_tracks, char* gif_name)
 {
     // first check if the file even exists
     if (SD.exists(config_filename)) {
@@ -214,6 +214,9 @@ void load_config(char* config_filename, char** scene_names, Track** module_track
 
     // yo how many scenes we got
     int n_scenes = size_of_toml_table(scenes_table);
+    
+    // assign the external variable for use outside the function
+    *n_scenes_ptr = n_scenes; 
 
     // allocate for scene names
     scene_names = (char**)calloc(n_scenes, sizeof(char*));
@@ -227,9 +230,7 @@ void load_config(char* config_filename, char** scene_names, Track** module_track
         module_tracks[i] = (Track*)calloc(n_scenes, sizeof(Track));
     }
 
-    Serial.print("found ");
-    Serial.print(n_scenes);
-    Serial.println(" scenes");
+    Serial.printf("found %d scenes\n", n_scenes);
 
     // how to write to one of the tracks
     // module_tracks[0][0] = Track{String("filename.wav"), String("name"), 1.0, false, false};
@@ -243,7 +244,7 @@ void load_config(char* config_filename, char** scene_names, Track** module_track
 
         toml_table_t* scene_subtable = toml_table_in(scenes_table, scene_key); // this will be used to extract all the scene specific settings
 
-        // get scene names
+        // get scene names, if not provided use the key
         toml_datum_t scene_name = toml_string_in(scene_subtable, "name");
         if (!scene_name.ok) {
             memcpy(scene_names[i], scene_key, MAX_CHAR);
@@ -252,7 +253,7 @@ void load_config(char* config_filename, char** scene_names, Track** module_track
             free(scene_name.u.s);
         }
 
-        Serial.println(scene_names[i]);
+        Serial.printf("Scene: %s\n", scene_names[i]);
 
         // get scene defaults
         double scene_gain = 0;
@@ -303,7 +304,11 @@ void load_config(char* config_filename, char** scene_names, Track** module_track
                 toml_datum_t track_array = toml_string_at(tracks_array, j);
                 if (!track_array.ok)
                     break;
-                module_tracks[j][i] = Track{track_array.u.s, track_array.u.s, scene_gain, scene_loop, scene_play};
+                memcpy(module_tracks[j][i].filename, track_array.u.s, MAX_CHAR);
+                memcpy(module_tracks[j][i].name, track_array.u.s, MAX_CHAR);
+                module_tracks[j][i].gain = scene_gain;
+                module_tracks[j][i].loop = scene_loop;
+                module_tracks[j][i].play = scene_play;
                 free(track_array.u.s);
             }
         }
@@ -314,7 +319,7 @@ void load_config(char* config_filename, char** scene_names, Track** module_track
         }
         // otherwise we need to load the fixed tracks into the array
         for (int k = 0; k < n_modules; k++) {
-            if (fixed_tracks[k].filename.length() > 0) {
+            if (sizeof(fixed_tracks[k].filename) > 0) {
                 module_tracks[k][i] = fixed_tracks[k];
             }
         }

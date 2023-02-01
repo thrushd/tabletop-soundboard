@@ -70,10 +70,26 @@ void SoundBoard::init()
     Serial.println("done");
 
     // read config file
-    load_config(config_file_name, scene_names, module_tracks, startup_gif_filename);
+    load_config(config_file_name, scene_names, &n_scenes, module_tracks, startup_gif_filename);
     
-    Serial.printf("Scene: %s\n", scene_names[0]);
+    Serial.printf("Number of Scenes: %d\n\n", n_scenes);
     
+    for (int i = 0; i < n_scenes; i++){
+        Serial.printf("Scene: %s\n", scene_names[i]);
+    }
+
+    for (int i = 0; i < n_scenes; i++){
+        Serial.printf("Scene: %s\n", scene_names[i]);
+        for (int j = 0; j < 8; j++){
+            Serial.printf("Track %d\n", j+1);
+            Serial.printf("Filename: %s\n", module_tracks[i][j].filename);
+            Serial.printf("Name: %s\n", module_tracks[i][j].name);
+            Serial.printf("Gain: %s\n", module_tracks[i][j].gain);
+            Serial.printf("Loop: %s\n", module_tracks[i][j].loop);
+            Serial.printf("Play: %s\n", module_tracks[i][j].play);
+            Serial.println();
+        }
+    }
 
     // init display
     main_display = new Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);

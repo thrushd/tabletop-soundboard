@@ -36,14 +36,14 @@ void Module::update(int new_scene_index)
         // if new scene is not scene, set scene to new scene
         scene_index = new_scene_index;
         // update the static duration since lengthMillis only returns while playing
-        play_sd->play(tracks[scene_index].filename.c_str());
+        play_sd->play(tracks[scene_index].filename);
         // TODO, this seems hacky and might be bad downstream
         while (!play_sd->isPlaying()) { } // block until the wav header is parsed, otherwise lengthMillis returns nothing
         track_duration = play_sd->lengthMillis();
         play_sd->stop();
         // start playing if play is set
         if (tracks[scene_index].play) {
-            play_sd->play(tracks[scene_index].filename.c_str());
+            play_sd->play(tracks[scene_index].filename);
             // set the play flag if we should be looping
             if (tracks[scene_index].loop)
                 play_flag = true;
@@ -56,7 +56,7 @@ void Module::update(int new_scene_index)
     // restart if the track finished and we want to loop
     if (tracks[scene_index].loop) {
         if (play_flag && play_sd->isStopped()) {
-            play_sd->play(tracks[scene_index].filename.c_str());
+            play_sd->play(tracks[scene_index].filename);
         }
     }
 
@@ -94,7 +94,7 @@ void Module::update_display()
     display.clearDisplay(); // clear the buffer
     // track name, centered
     // rescale text size if name is too long to fit as size 2, can currently fit 10 chars before newline with size 2, 21 chars on a single line with size 1, will wrap if over that for a max total of 42
-    if (strlen(tracks[scene_index].name.c_str()) > 10) {
+    if (strlen(tracks[scene_index].name) > 10) {
         display.setTextSize(1);
     } else {
         display.setTextSize(2);
@@ -180,7 +180,7 @@ void Module::process_single()
         // if stopped it's the first time through and we need to play
         if (play_sd->isStopped()) {
             Serial.println("play first");
-            play_sd->play(tracks[scene_index].filename.c_str());
+            play_sd->play(tracks[scene_index].filename);
             play_flag = true;
             return;
         }
@@ -200,7 +200,7 @@ void Module::process_single()
     // If stopped start playing
     if (play_sd->isStopped()) {
         Serial.println("play normal");
-        play_sd->play(tracks[scene_index].filename.c_str());
+        play_sd->play(tracks[scene_index].filename);
         return;
     }
 
