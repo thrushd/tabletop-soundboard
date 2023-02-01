@@ -40,9 +40,9 @@ AudioConnection          patchCord21(right_final_mixer, 0, pt8211_1, 1);
 AudioConnection          patchCord22(left_final_mixer, 0, pt8211_1, 0);
 // GUItool: end automatically generated code
 
-SoundBoard::SoundBoard(char *config_file_name)
+SoundBoard::SoundBoard(char* config_file_name)
 {
-    this->config_file_name = config_file_name;
+    memcpy(this->config_file_name, config_file_name, MAX_CHAR);
     init();
 }
 

@@ -172,7 +172,8 @@ void load_config(char* config_filename, char** scene_names, Track** module_track
     if (gif_table){
         toml_datum_t startup_gif_toml = toml_string_in(gif_table, "startup");
         if (startup_gif_toml.ok){
-            gif_name = startup_gif_toml.u.s;
+            memcpy(gif_name, startup_gif_toml.u.s, MAX_CHAR);
+            free(startup_gif_toml.u.s);
         }
     }
 

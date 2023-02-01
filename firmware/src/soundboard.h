@@ -28,7 +28,7 @@
 
 class SoundBoard {
 public:
-    SoundBoard(char *config_file_name);
+    SoundBoard(char* config_file_name);
     void update();
 
 private:
@@ -40,7 +40,7 @@ private:
     int cursor_pos = 0; // position of the cursor in the displayed scenes
     int active_scene = 0; // the current active scene
 
-    char** scene_names[MAX_CHAR];
+    char* scene_names[MAX_CHAR];
     Track** module_tracks;
     char startup_gif_filename[MAX_CHAR];
 
