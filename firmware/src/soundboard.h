@@ -2,7 +2,9 @@
 
 #include "gif_player.h"
 #include "module.h"
-#include "read_config.h"
+#include "toml.h"
+#include "track.h"
+#include "helper_functions.h"
 #include <Adafruit_GFX.h> // Core graphics library
 #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #include <Arduino.h>
@@ -24,6 +26,8 @@
 #define ENCODER_A_PIN 35
 #define ENCODER_B_PIN 36
 
+#define N_MODULES 8
+
 #define CHIP_SELECT BUILTIN_SDCARD
 
 class SoundBoard {
@@ -40,7 +44,7 @@ private:
     int cursor_pos = 0; // position of the cursor in the displayed scenes
     int active_scene = 0; // the current active scene
 
-    char* scene_names[MAX_CHAR];
+    char** scene_names;
     int n_scenes;
     Track** module_tracks;
     char startup_gif_filename[MAX_CHAR];
@@ -58,6 +62,11 @@ private:
     void process_single();
     void process_double();
     void process_hold();
+
+    int size_of_toml_table(toml_table_t* table);
+    void print_track(Track input_track);
+    Track table_to_track(toml_table_t* input_table, double default_gain, bool default_loop, bool default_play);
+    void load_config();
 };
 
 /*
