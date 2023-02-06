@@ -49,10 +49,6 @@ private:
     Track** module_tracks;
     char startup_gif_filename[MAX_CHAR];
 
-    // std::vector<String> scene_names;
-
-    // GifPlayer* gif_player;
-
     void init();
 
     // onebutton update functions

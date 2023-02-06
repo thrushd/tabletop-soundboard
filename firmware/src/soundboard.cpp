@@ -1,21 +1,21 @@
 #include "soundboard.h"
 
 // GUItool: begin automatically generated code
-AudioPlaySdWav play_sd_wav_1;  // xy=765.0000152587891,499.0000190734863
-AudioPlaySdWav play_sd_wav_2;  // xy=765.0000152587891,539.0000228881836
-AudioPlaySdWav play_sd_wav_3;  // xy=765.0000152587891,580.0000228881836
-AudioPlaySdWav play_sd_wav_4;  // xy=765.0000190734863,624.0000190734863
-AudioPlaySdWav play_sd_wav_5;  // xy=765.0000190734863,667.0000200271606
-AudioPlaySdWav play_sd_wav_0;  // xy=766.0000152587891,455.000018119812
-AudioPlaySdWav play_sd_wav_6;  // xy=765.0000190734863,708.000020980835
-AudioPlaySdWav play_sd_wav_7;  // xy=766.0000190734863,748.0000228881836
-AudioMixer4 right_mixer_0;     // xy=1033.0001907348633,660.0000190734863
-AudioMixer4 left_mixer_1;      // xy=1034.0001907348633,539.0000553131104
-AudioMixer4 right_mixer_1;     // xy=1034.0001907348633,732.0000228881836
-AudioMixer4 left_mixer_0;      // xy=1036.0000305175781,469.000093460083
+AudioPlaySdWav play_sd_wav_1; // xy=765.0000152587891,499.0000190734863
+AudioPlaySdWav play_sd_wav_2; // xy=765.0000152587891,539.0000228881836
+AudioPlaySdWav play_sd_wav_3; // xy=765.0000152587891,580.0000228881836
+AudioPlaySdWav play_sd_wav_4; // xy=765.0000190734863,624.0000190734863
+AudioPlaySdWav play_sd_wav_5; // xy=765.0000190734863,667.0000200271606
+AudioPlaySdWav play_sd_wav_0; // xy=766.0000152587891,455.000018119812
+AudioPlaySdWav play_sd_wav_6; // xy=765.0000190734863,708.000020980835
+AudioPlaySdWav play_sd_wav_7; // xy=766.0000190734863,748.0000228881836
+AudioMixer4 right_mixer_0; // xy=1033.0001907348633,660.0000190734863
+AudioMixer4 left_mixer_1; // xy=1034.0001907348633,539.0000553131104
+AudioMixer4 right_mixer_1; // xy=1034.0001907348633,732.0000228881836
+AudioMixer4 left_mixer_0; // xy=1036.0000305175781,469.000093460083
 AudioMixer4 right_final_mixer; // xy=1293.0000381469727,646.0000190734863
-AudioMixer4 left_final_mixer;  // xy=1295.0000381469727,563.0000953674316
-AudioOutputPT8211 pt8211_1;    // xy=1524,598
+AudioMixer4 left_final_mixer; // xy=1295.0000381469727,563.0000953674316
+AudioOutputPT8211 pt8211_1; // xy=1524,598
 AudioConnection patchCord1(play_sd_wav_1, 0, left_mixer_0, 1);
 AudioConnection patchCord2(play_sd_wav_1, 1, right_mixer_0, 1);
 AudioConnection patchCord3(play_sd_wav_2, 0, left_mixer_0, 2);
@@ -40,9 +40,9 @@ AudioConnection patchCord21(right_final_mixer, 0, pt8211_1, 1);
 AudioConnection patchCord22(left_final_mixer, 0, pt8211_1, 0);
 // GUItool: end automatically generated code
 
-SoundBoard::SoundBoard(char *config_file_name)
+SoundBoard::SoundBoard(char* config_file_name)
 {
-    memcpy(this->config_file_name, config_file_name, MAX_CHAR);
+    strcpy(this->config_file_name, config_file_name);    
     init();
 }
 
@@ -62,12 +62,10 @@ void SoundBoard::init()
     // set up SD card
     Serial.print("initializing SD card... ");
 
-    if (!SD.begin(CHIP_SELECT))
-    {
+    if (!SD.begin(CHIP_SELECT)) {
         Serial.println();
         Serial.println("SD initialization failed");
-        while (1)
-        {
+        while (1) {
         }
     }
     Serial.println("done");
@@ -75,28 +73,14 @@ void SoundBoard::init()
     // read config file
     load_config();
 
-    Serial.printf("Number of Scenes: %d\n\n", n_scenes);
-
-    for (int i = 0; i < n_scenes; i++)
-    {
-        Serial.printf("Scene: %s\n", scene_names[i]);
-    }
-
-    Serial.println("here");
-
-    for (int i = 0; i < n_scenes; i++)
-    {
-        Serial.printf("Scene: %s\n", scene_names[i]);
-        for (int j = 0; j < 8; j++)
-        {
-            Serial.printf("Track %d\n", j + 1);
-            Serial.printf("Filename: %s\n", module_tracks[i][j].filename);
-            Serial.printf("Name: %s\n", module_tracks[i][j].name);
-            Serial.printf("Gain: %s\n", module_tracks[i][j].gain);
-            Serial.printf("Loop: %s\n", module_tracks[i][j].loop);
-            Serial.printf("Play: %s\n", module_tracks[i][j].play);
+    Serial.println();
+    for (int i = 0; i < n_scenes; i++) {
+        for (int j = 0; j < N_MODULES; j++) {
+            Serial.printf("Scene %d, Track %d\n", i, j);
+            print_track(module_tracks[i][j]);
             Serial.println();
         }
+        Serial.println();
     }
 
     // init display
@@ -107,16 +91,16 @@ void SoundBoard::init()
     init_player(main_display);
     play_gif(startup_gif_filename);
 
-    while (1)
-    {
+    Serial.println("End!");
+    while (1) {
     }
 
     // Module mod_1(0, 33, tracks, &play_sd_wav_0, &left_mixer_0, &right_mixer_0, &Wire, &knobbo);
 }
 
-void SoundBoard::handle_single(void *ptr)
+void SoundBoard::handle_single(void* ptr)
 {
-    SoundBoard *sb_ptr = (SoundBoard *)ptr;
+    SoundBoard* sb_ptr = (SoundBoard*)ptr;
     sb_ptr->process_single();
 }
 
@@ -125,13 +109,11 @@ void SoundBoard::process_single()
     Serial.println("Encoder single click");
 }
 
-int SoundBoard::size_of_toml_table(toml_table_t *table)
+int SoundBoard::size_of_toml_table(toml_table_t* table)
 {
-    for (int i = 0;; i++)
-    {
-        const char *key = toml_key_in(table, i);
-        if (!key)
-        {
+    for (int i = 0;; i++) {
+        const char* key = toml_key_in(table, i);
+        if (!key) {
             return i;
         }
     }
@@ -141,75 +123,56 @@ int SoundBoard::size_of_toml_table(toml_table_t *table)
 // print out track for debugging
 void SoundBoard::print_track(Track input_track)
 {
-    Serial.print("Filename: ");
-    Serial.println(input_track.filename);
-    Serial.print("Name: ");
-    Serial.println(input_track.name);
-    Serial.print("Gain: ");
-    Serial.println(input_track.gain);
-    Serial.print("Loop: ");
-    Serial.println(input_track.loop);
-    Serial.print("Play: ");
-    Serial.println(input_track.play);
-    Serial.println();
+    Serial.printf("Filename: %s\n", input_track.filename);
+    Serial.printf("Name: %s\n", input_track.name);
+    Serial.printf("Gain: %.2f\n", input_track.gain);
+    Serial.printf("Loop: %d\n", input_track.loop);
+    Serial.printf("Play: %d\n", input_track.play);
 }
 
 // extract all track data to a track object from a given toml track table, using defaults if no settings present
-Track SoundBoard::table_to_track(toml_table_t *input_table, double default_gain, bool default_loop, bool default_play)
+Track SoundBoard::table_to_track(toml_table_t* input_table, double default_gain, bool default_loop, bool default_play)
 {
     Track track;
     // read in filename, this is the only required attribute, so hard fail if it's not here
     toml_datum_t fixed_track_filename = toml_string_in(input_table, "filename");
-    if (!fixed_track_filename.ok)
-    {
+    if (!fixed_track_filename.ok) {
         fatal("Cannot find fixed track filename", "");
     }
-    memcpy(track.filename, fixed_track_filename.u.s, MAX_CHAR);
+    strcpy(track.filename, fixed_track_filename.u.s);
 
     // read in name, use filename if not given
     toml_datum_t fixed_track_name = toml_string_in(input_table, "name");
-    if (!fixed_track_name.ok)
-    {
+    if (!fixed_track_name.ok) {
         // TODO: find a way to trim off the file extension for the name
-        memcpy(track.name, fixed_track_filename.u.s, MAX_CHAR);
-    }
-    else
-    {
-        memcpy(track.name, fixed_track_name.u.s, MAX_CHAR);
+        strcpy(track.name, fixed_track_filename.u.s);
+    } else {
+        strcpy(track.name, fixed_track_name.u.s);
         free(fixed_track_name.u.s);
     }
     free(fixed_track_filename.u.s);
 
     // read in gain, use default if not given
     toml_datum_t fixed_track_gain = toml_double_in(input_table, "gain");
-    if (!fixed_track_gain.ok)
-    {
+    if (!fixed_track_gain.ok) {
         track.gain = default_gain;
-    }
-    else
-    {
+    } else {
         track.gain = fixed_track_gain.u.d;
     }
 
     // read in loop, use default if not given
     toml_datum_t fixed_track_loop = toml_bool_in(input_table, "loop");
-    if (!fixed_track_loop.ok)
-    {
+    if (!fixed_track_loop.ok) {
         track.loop = default_loop;
-    }
-    else
-    {
+    } else {
         track.loop = fixed_track_loop.u.b;
     }
 
     // read in play, use default if not given
     toml_datum_t fixed_track_play = toml_bool_in(input_table, "play");
-    if (!fixed_track_play.ok)
-    {
+    if (!fixed_track_play.ok) {
         track.play = default_play;
-    }
-    else
-    {
+    } else {
         track.play = fixed_track_play.u.b;
     }
     return track;
@@ -218,12 +181,9 @@ Track SoundBoard::table_to_track(toml_table_t *input_table, double default_gain,
 void SoundBoard::load_config()
 {
     // first check if the file even exists
-    if (SD.exists(config_file_name))
-    {
+    if (SD.exists(config_file_name)) {
         Serial.print("config found, ");
-    }
-    else
-    {
+    } else {
         fatal("config not found", "");
     }
 
@@ -232,8 +192,7 @@ void SoundBoard::load_config()
 
     // read toml file
     config_file = SD.open(config_file_name, FILE_READ);
-    if (!config_file)
-    {
+    if (!config_file) {
         fatal("cannot open config ", "");
     }
     Serial.print("opened, ");
@@ -245,8 +204,7 @@ void SoundBoard::load_config()
     char tomlbuffer[config_size];
     char errbuf[200];
     int index = 0;
-    while (config_file.available())
-    {
+    while (config_file.available()) {
         char c = config_file.read();
         tomlbuffer[index] = c;
         if (c == 0)
@@ -262,19 +220,18 @@ void SoundBoard::load_config()
     // Serial.println(tomlbuffer);
 
     // parse the file
-    toml_table_t *conf = toml_parse(tomlbuffer, errbuf, sizeof(errbuf));
+    toml_table_t* conf = toml_parse(tomlbuffer, errbuf, sizeof(errbuf));
     Serial.print("read, ");
     config_file.close();
     Serial.print("closed, ");
 
-    if (!conf)
-    {
+    if (!conf) {
         fatal("cannot parse - ", errbuf);
     }
     Serial.println("parsed.");
 
     // find the default table, can't proceed without it
-    toml_table_t *default_table = toml_table_in(conf, "default");
+    toml_table_t* default_table = toml_table_in(conf, "default");
     if (!default_table)
         fatal("missing default settings", "");
 
@@ -295,23 +252,21 @@ void SoundBoard::load_config()
     double default_gain = default_gain_datum.u.d;
 
     // extract the gif name
-    toml_table_t *gif_table = toml_table_in(conf, "gifs");
-    if (gif_table)
-    {
+    toml_table_t* gif_table = toml_table_in(conf, "gifs");
+    if (gif_table) {
         toml_datum_t startup_gif_toml = toml_string_in(gif_table, "startup");
-        if (startup_gif_toml.ok)
-        {
-            memcpy(startup_gif_filename, startup_gif_toml.u.s, MAX_CHAR);
+        if (startup_gif_toml.ok) {
+            strcpy(startup_gif_filename, startup_gif_toml.u.s);
             free(startup_gif_toml.u.s);
         }
     }
 
     // traverse and extract any fixed tracks
     // arrays need to be outside and fixed size because dumb
-    Track fixed_tracks[N_MODULES];
-    toml_table_t *fixed_table = toml_table_in(conf, "fixed");
-    if (fixed_table)
-    {
+    Track* fixed_tracks = (Track*)calloc(N_MODULES, sizeof(Track));
+
+    toml_table_t* fixed_table = toml_table_in(conf, "fixed");
+    if (fixed_table) {
         // fixed tracks present, get em
         int n_fixed_tracks = size_of_toml_table(fixed_table);
         Serial.print("found ");
@@ -319,32 +274,26 @@ void SoundBoard::load_config()
         Serial.println(" fixed tracks");
 
         // populate array
-        for (int i = 0;; i++)
-        {
-            const char *key = toml_key_in(fixed_table, i);
-            if (!key)
-            {
+        for (int i = 0;; i++) {
+            const char* key = toml_key_in(fixed_table, i);
+            if (!key) {
                 break;
             }
             // error check the track number that was entered
-            if (atoi(key) > N_MODULES)
-            {
+            if (atoi(key) > N_MODULES) {
                 fatal("fixed track number exeeds number of modules", "");
             }
             // extract table and get track
-            toml_table_t *fixed_subtable = toml_table_in(fixed_table, key);
+            toml_table_t* fixed_subtable = toml_table_in(fixed_table, key);
             fixed_tracks[atoi(key) - 1] = table_to_track(fixed_subtable, default_gain, default_loop, default_play);
         }
-    }
-    else
-    {
+    } else {
         Serial.println("no fixed tracks found");
     }
 
     // find the scene table
-    toml_table_t *scenes_table = toml_table_in(conf, "scenes");
-    if (!scenes_table)
-    {
+    toml_table_t* scenes_table = toml_table_in(conf, "scenes");
+    if (!scenes_table) {
         fatal("no scenes found", "");
     }
 
@@ -352,47 +301,38 @@ void SoundBoard::load_config()
     n_scenes = size_of_toml_table(scenes_table);
 
     // allocate for scene names
-    scene_names = (char **)calloc(n_scenes, sizeof(char *));
-    for (int i = 0; i < n_scenes; i++)
-    {
-        scene_names[i] = (char *)calloc(1, MAX_CHAR);
+    scene_names = (char**)calloc(n_scenes, sizeof(char*));
+    for (int i = 0; i < n_scenes; i++) {
+        scene_names[i] = (char*)calloc(1, MAX_CHAR);
     }
 
     // allocate for track array
-    module_tracks = (Track **)calloc(N_MODULES, sizeof(Track *));
-    for (int i = 0; i < N_MODULES; i++)
-    {
-        module_tracks[i] = (Track *)calloc(n_scenes, sizeof(Track));
+    module_tracks = (Track**)calloc(n_scenes, sizeof(Track*));
+    for (int i = 0; i < n_scenes; i++) {
+        module_tracks[i] = (Track*)calloc(N_MODULES, sizeof(Track));
     }
 
     Serial.printf("found %d scenes\n", n_scenes);
 
-    // how to write to one of the tracks
-    // module_tracks[0][0] = Track{String("filename.wav"), String("name"), 1.0, false, false};
-
     // loop through all scenes to load them and their tracks into the array
-    for (int i = 0;; i++)
-    {
+    for (int i = 0;; i++) {
         // for each scene
-        const char *scene_key = toml_key_in(scenes_table, i); // this will be the toml name of the scene ("tavern", "camp", etc)
+        const char* scene_key = toml_key_in(scenes_table, i); // this will be the toml name of the scene ("tavern", "camp", etc)
         if (!scene_key)
             break;
 
-        toml_table_t *scene_subtable = toml_table_in(scenes_table, scene_key); // this will be used to extract all the scene specific settings
+        toml_table_t* scene_subtable = toml_table_in(scenes_table, scene_key); // this will be used to extract all the scene specific settings
 
         // get scene names, if not provided use the key
         toml_datum_t scene_name = toml_string_in(scene_subtable, "name");
-        if (!scene_name.ok)
-        {
-            memcpy(scene_names[i], scene_key, MAX_CHAR);
-        }
-        else
-        {
-            memcpy(scene_names[i], scene_name.u.s, MAX_CHAR);
+        if (!scene_name.ok) {
+            strcpy(scene_names[i], scene_key);
+        } else {
+            strcpy(scene_names[i], scene_name.u.s);
             free(scene_name.u.s);
         }
 
-        Serial.printf("Scene: %s\n", scene_names[i]);
+        // Serial.printf("Scene: %s\n", scene_names[i]);
 
         // get scene defaults
         double scene_gain = 0;
@@ -400,100 +340,75 @@ void SoundBoard::load_config()
         bool scene_play = false;
 
         toml_datum_t scene_gain_toml = toml_double_in(scene_subtable, "gain");
-        if (!scene_gain_toml.ok)
-        {
+        if (!scene_gain_toml.ok) {
             scene_gain = default_gain;
-        }
-        else
-        {
+        } else {
             scene_gain = scene_gain_toml.u.d;
         }
         toml_datum_t scene_loop_toml = toml_bool_in(scene_subtable, "loop");
-        if (!scene_loop_toml.ok)
-        {
+        if (!scene_loop_toml.ok) {
             scene_loop = default_loop;
-        }
-        else
-        {
+        } else {
             scene_loop = scene_loop_toml.u.b;
         }
         toml_datum_t scene_play_toml = toml_bool_in(scene_subtable, "play");
-        if (!scene_play_toml.ok)
-        {
+        if (!scene_play_toml.ok) {
             scene_play = default_play;
-        }
-        else
-        {
+        } else {
             scene_play = scene_play_toml.u.b;
         }
 
         // get array called 'tracks' in the scene subtable
-        toml_array_t *tracks_array = toml_array_in(scene_subtable, "tracks");
-        if (!tracks_array)
-        {
+        toml_array_t* tracks_array = toml_array_in(scene_subtable, "tracks");
+        if (!tracks_array) {
             // minimal track array not found, loop through track keys to get values
-            toml_table_t *track_table = toml_table_in(conf, scene_key);
+            toml_table_t* track_table = toml_table_in(conf, scene_key);
             // get tracks
-            for (int j = 0;; j++)
-            {
+            for (int j = 0;; j++) {
                 // TODO: if no tracks are defined in the config program will just hang here, should have a way to error handle this
-                const char *track_key = toml_key_in(track_table, j); // this will be the toml track number ("1", "2", "3", etc)
+                const char* track_key = toml_key_in(track_table, j); // this will be the toml track number ("1", "2", "3", etc)
                 // exit if we run out
                 if (!track_key)
                     break;
                 // get a table with the track settings
-                toml_table_t *track_subtable = toml_table_in(track_table, track_key); // table with the track settings
+                toml_table_t* track_subtable = toml_table_in(track_table, track_key); // table with the track settings
                 if (!track_subtable)
                     fatal("No tracks found for scene ", scene_key); // hard exit if no tracks are given for scene
                 // load the track object into the array
-                module_tracks[j][i] = table_to_track(track_subtable, scene_gain, scene_loop, scene_play);
+                module_tracks[i][j] = table_to_track(track_subtable, scene_gain, scene_loop, scene_play); // The SAME?!?!?!?
             }
-        }
-        else
-        {
+        } else {
             // track array is present, so use that to load in all the tracks
-            for (int j = 0;; j++)
-            {
+            for (int j = 0;; j++) {
                 toml_datum_t track_array = toml_string_at(tracks_array, j);
                 if (!track_array.ok)
                     break;
-                memcpy(module_tracks[j][i].filename, track_array.u.s, MAX_CHAR);
-                memcpy(module_tracks[j][i].name, track_array.u.s, MAX_CHAR);
-                module_tracks[j][i].gain = scene_gain;
-                module_tracks[j][i].loop = scene_loop;
-                module_tracks[j][i].play = scene_play;
+                // copy contents to the array
+                strcpy(module_tracks[i][j].filename, track_array.u.s);
+                strcpy(module_tracks[i][j].name, track_array.u.s);
+                module_tracks[i][j].gain = scene_gain;
+                module_tracks[i][j].loop = scene_loop;
+                module_tracks[i][j].play = scene_play;
                 free(track_array.u.s);
             }
         }
 
         // if there is no fixed table we can exit now
-        if (!fixed_table)
-        {
+        if (!fixed_table) {
             break;
         }
         // otherwise we need to load the fixed tracks into the array
-        for (int k = 0; k < N_MODULES; k++)
-        {
-            if (sizeof(fixed_tracks[k].filename) > 0)
-            {
-                module_tracks[k][i] = fixed_tracks[k];
+        for (int j = 0; j < N_MODULES; j++) {
+            if (strlen(fixed_tracks[j].filename) > 0) {
+                module_tracks[i][j] = fixed_tracks[j];
             }
         }
     }
     return;
 }
 
+
 /*
-
-void display_setup() {
-  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if(!main_display.begin(SSD1306_SWITCHCAPVCC, MAIN_SCREEN_ADDRESS)) {
-    Serial.println(F("SSD1306 allocation failed"));
-    fatal("failed to set up display", "");
-  }
-  main_display.clearDisplay();
-}
-
 
 void display_text_test() {
   main_display.clearDisplay();

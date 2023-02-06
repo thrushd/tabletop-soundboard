@@ -8,7 +8,7 @@
 struct Track {
     char filename[MAX_CHAR];
     char name[MAX_CHAR];
-    double gain {};
-    bool loop {};
-    bool play {};
+    double gain;
+    bool loop;
+    bool play;
 };
