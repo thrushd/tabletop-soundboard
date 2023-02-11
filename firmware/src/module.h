@@ -1,5 +1,6 @@
 #pragma once
 
+#include "track.h"
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
@@ -7,28 +8,26 @@
 #include <Encoder.h>
 #include <OneButton.h>
 #include <Wire.h>
-#include "track.h"
-
-// #include "read_config.h"
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
-#define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+#define OLED_RESET -1
 #define SCREEN_ADDRESS 0x3C
 #define GAIN_MIN 0
 #define GAIN_MAX 1
 
 #define TCA_ADDR 0x70 // address of i2c multiplexer chip
 
-
 class Module {
 public:
-    Module(int module_number, int button_pin, Track* tracks_in, AudioPlaySdWav* play_sd, AudioMixer4* mixer_left, AudioMixer4* mixer_right, TwoWire* twi, Encoder* knob);
+    // Module();
+    Module(int module_number, int button_pin, Track** tracks_in, AudioPlaySdWav* play_sd, AudioMixer4* mixer_left, AudioMixer4* mixer_right, TwoWire* twi, Encoder* knob);
+    // void begin(int module_number, int button_pin, Track** tracks_in, AudioPlaySdWav* play_sd, AudioMixer4* mixer_left, AudioMixer4* mixer_right, TwoWire* twi, Encoder* knob);
     void update(int new_scene_index);
 
 private:
     // pointer to array of track objects
-    Track* tracks;
+    Track** tracks;
     // current scene index
     int scene_index = -1;
     // module number

@@ -53,3 +53,19 @@ play = true
 [scenes.mountain]
 loop = true
 tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
+
+[scenes.cliff]
+name = "Cliff"
+tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
+
+[scenes.field]
+name = "Field"
+tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
+
+[scenes.forest]
+name = "Forest (spooky)"
+tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
+
+[scenes.forest_2]
+name = "Forest (calm)"
+tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]

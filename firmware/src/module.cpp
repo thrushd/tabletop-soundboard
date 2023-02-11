@@ -1,6 +1,6 @@
 #include "module.h"
 
-Module::Module(int module_number, int button_pin, Track* tracks_in, AudioPlaySdWav* play_sd, AudioMixer4* mixer_left, AudioMixer4* mixer_right, TwoWire* twi, Encoder* knob)
+Module::Module(int module_number, int button_pin, Track** tracks_in, AudioPlaySdWav* play_sd, AudioMixer4* mixer_left, AudioMixer4* mixer_right, TwoWire* twi, Encoder* knob)
 {
     this->module_number = module_number;
     this->button_pin = button_pin;
@@ -12,6 +12,32 @@ Module::Module(int module_number, int button_pin, Track* tracks_in, AudioPlaySdW
     this->knob = knob;
     init();
 }
+
+// void Module::begin(int module_number, int button_pin, Track** tracks_in, AudioPlaySdWav* play_sd, AudioMixer4* mixer_left, AudioMixer4* mixer_right, TwoWire* twi, Encoder* knob)
+// {
+//     this->module_number = module_number;
+//     this->button_pin = button_pin;
+//     this->tracks = tracks_in;
+//     this->play_sd = play_sd;
+//     this->mixer_left = mixer_left;
+//     this->mixer_right = mixer_right;
+//     this->twi = twi;
+//     this->knob = knob;
+    
+//     // init button
+//     button = OneButton(button_pin, true, true);
+//     button.attachClick(handle_single, this);
+//     // button.attachDoubleClick(handle_double, this);
+//     button.attachDuringLongPress(handle_hold, this);
+
+//     // init display
+//     set_mp_addr();
+//     display = Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, twi, OLED_RESET);
+//     display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+//     display.clearDisplay(); // clear the buffer
+//     display.display(); // display the empty screen
+
+// }
 
 void Module::init()
 {
@@ -36,16 +62,16 @@ void Module::update(int new_scene_index)
         // if new scene is not scene, set scene to new scene
         scene_index = new_scene_index;
         // update the static duration since lengthMillis only returns while playing
-        play_sd->play(tracks[scene_index].filename);
+        play_sd->play(tracks[scene_index][module_number].filename);
         // TODO, this seems hacky and might be bad downstream
         while (!play_sd->isPlaying()) { } // block until the wav header is parsed, otherwise lengthMillis returns nothing
         track_duration = play_sd->lengthMillis();
         play_sd->stop();
         // start playing if play is set
-        if (tracks[scene_index].play) {
-            play_sd->play(tracks[scene_index].filename);
+        if (tracks[scene_index][module_number].play) {
+            play_sd->play(tracks[scene_index][module_number].filename);
             // set the play flag if we should be looping
-            if (tracks[scene_index].loop)
+            if (tracks[scene_index][module_number].loop)
                 play_flag = true;
         }
     }
@@ -54,9 +80,9 @@ void Module::update(int new_scene_index)
     button.tick();
 
     // restart if the track finished and we want to loop
-    if (tracks[scene_index].loop) {
+    if (tracks[scene_index][module_number].loop) {
         if (play_flag && play_sd->isStopped()) {
-            play_sd->play(tracks[scene_index].filename);
+            play_sd->play(tracks[scene_index][module_number].filename);
         }
     }
 
@@ -73,8 +99,8 @@ void Module::update(int new_scene_index)
         gain_diff = double(map_float(diff_int, enc_int_min, enc_int_max, GAIN_MIN, GAIN_MAX));
     }
     
-    mixer_left->gain(module_number % 4, tracks[scene_index].gain);
-    mixer_right->gain(module_number % 4, tracks[scene_index].gain);
+    mixer_left->gain(module_number % 4, tracks[scene_index][module_number].gain);
+    mixer_right->gain(module_number % 4, tracks[scene_index][module_number].gain);
 
     update_display();
 }
@@ -94,7 +120,7 @@ void Module::update_display()
     display.clearDisplay(); // clear the buffer
     // track name, centered
     // rescale text size if name is too long to fit as size 2, can currently fit 10 chars before newline with size 2, 21 chars on a single line with size 1, will wrap if over that for a max total of 42
-    if (strlen(tracks[scene_index].name) > 10) {
+    if (strlen(tracks[scene_index][module_number].name) > 10) {
         display.setTextSize(1);
     } else {
         display.setTextSize(2);
@@ -102,9 +128,9 @@ void Module::update_display()
     display.setTextColor(SSD1306_WHITE);
     int16_t text_x, text_y;
     uint16_t text_w, text_h;
-    display.getTextBounds(tracks[scene_index].name, 0, 0, &text_x, &text_y, &text_w, &text_h);
+    display.getTextBounds(tracks[scene_index][module_number].name, 0, 0, &text_x, &text_y, &text_w, &text_h);
     display.setCursor((SCREEN_WIDTH - text_w) / 2, (SCREEN_HEIGHT / 2 - text_h) / 2);
-    display.print(tracks[scene_index].name);
+    display.print(tracks[scene_index][module_number].name);
     // track length, count down when playing
     display.setTextSize(1);
     display.setCursor(6, 24);
@@ -112,22 +138,22 @@ void Module::update_display()
     // draw track progress
     rect_progress_bar(54, 24, 74, 8, play_sd->positionMillis(), track_duration);
     // draw gain bar
-    volume_display(26, 16, 72, 6, tracks[scene_index].gain, GAIN_MAX);
+    volume_display(26, 16, 72, 6, tracks[scene_index][module_number].gain, GAIN_MAX);
     // gain number
     display.setCursor(104, 16);
     char gain_buff[16];
-    sprintf(gain_buff, "G%0.1f", tracks[scene_index].gain);
+    sprintf(gain_buff, "G%0.1f", tracks[scene_index][module_number].gain);
     display.print(gain_buff);
     // loop
     display.drawChar(6, 16, 0x4C, SSD1306_WHITE, SSD1306_BLACK, 1); // draw L
-    if (tracks[scene_index].loop) {
+    if (tracks[scene_index][module_number].loop) {
         display.drawChar(0, 16, 0x2B, SSD1306_WHITE, SSD1306_BLACK, 1); // draw + if yes
     } else {
         display.drawChar(0, 16, 0x2D, SSD1306_WHITE, SSD1306_BLACK, 1); // draw - if no
     }
     // play
     display.drawChar(18, 16, 0x50, SSD1306_WHITE, SSD1306_BLACK, 1); // draw P
-    if (tracks[scene_index].play) {
+    if (tracks[scene_index][module_number].play) {
         display.drawChar(12, 16, 0x2B, SSD1306_WHITE, SSD1306_BLACK, 1); // draw + if yes
     } else {
         display.drawChar(12, 16, 0x2D, SSD1306_WHITE, SSD1306_BLACK, 1); // draw - if no
@@ -176,11 +202,11 @@ void Module::process_single()
     // based on state decide how it should change
 
     // If loop: play/pause
-    if (tracks[scene_index].loop) {
+    if (tracks[scene_index][module_number].loop) {
         // if stopped it's the first time through and we need to play
         if (play_sd->isStopped()) {
             Serial.println("play first");
-            play_sd->play(tracks[scene_index].filename);
+            play_sd->play(tracks[scene_index][module_number].filename);
             play_flag = true;
             return;
         }
@@ -200,7 +226,7 @@ void Module::process_single()
     // If stopped start playing
     if (play_sd->isStopped()) {
         Serial.println("play normal");
-        play_sd->play(tracks[scene_index].filename);
+        play_sd->play(tracks[scene_index][module_number].filename);
         return;
     }
 
@@ -213,19 +239,19 @@ void Module::process_single()
 void Module::process_double()
 {
     Serial.println("double click!");
-    tracks[scene_index].loop = !tracks[scene_index].loop;
+    tracks[scene_index][module_number].loop = !tracks[scene_index][module_number].loop;
 }
 
 // process a hold event (adjust gain of current module)
 void Module::process_hold()
 {
     // set the track gain
-    tracks[scene_index].gain = tracks[scene_index].gain + gain_diff;
+    tracks[scene_index][module_number].gain = tracks[scene_index][module_number].gain + gain_diff;
     // bound the gain
-    if (tracks[scene_index].gain >= GAIN_MAX)
-        tracks[scene_index].gain = GAIN_MAX;
-    else if (tracks[scene_index].gain <= GAIN_MIN)
-        tracks[scene_index].gain = GAIN_MIN;
+    if (tracks[scene_index][module_number].gain >= GAIN_MAX)
+        tracks[scene_index][module_number].gain = GAIN_MAX;
+    else if (tracks[scene_index][module_number].gain <= GAIN_MIN)
+        tracks[scene_index][module_number].gain = GAIN_MIN;
     // reset the difference
     gain_diff = 0;
 }
