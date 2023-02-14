@@ -32,7 +32,7 @@ Module::Module(int module_number, int button_pin, Track** tracks_in, AudioPlaySd
 
 //     // init display
 //     set_mp_addr();
-//     display = Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, twi, OLED_RESET);
+//     display = Adafruit_SSD1306(MODULE_SCREEN_WIDTH, MODULE_SCREEN_HEIGHT, twi, OLED_RESET);
 //     display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
 //     display.clearDisplay(); // clear the buffer
 //     display.display(); // display the empty screen
@@ -49,7 +49,7 @@ void Module::init()
 
     // init display
     set_mp_addr();
-    display = Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, twi, OLED_RESET);
+    display = Adafruit_SSD1306(MODULE_SCREEN_WIDTH, MODULE_SCREEN_HEIGHT, twi, OLED_RESET);
     display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
     display.clearDisplay(); // clear the buffer
     display.display(); // display the empty screen
@@ -129,7 +129,7 @@ void Module::update_display()
     int16_t text_x, text_y;
     uint16_t text_w, text_h;
     display.getTextBounds(tracks[scene_index][module_number].name, 0, 0, &text_x, &text_y, &text_w, &text_h);
-    display.setCursor((SCREEN_WIDTH - text_w) / 2, (SCREEN_HEIGHT / 2 - text_h) / 2);
+    display.setCursor((MODULE_SCREEN_WIDTH - text_w) / 2, (MODULE_SCREEN_HEIGHT / 2 - text_h) / 2);
     display.print(tracks[scene_index][module_number].name);
     // track length, count down when playing
     display.setTextSize(1);

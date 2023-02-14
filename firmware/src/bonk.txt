@@ -1,26 +1,4 @@
-Now:
-    Scene 1
-        track 1
-        track 2
-        track 3
-        ...
-    Scene 2
-        track 1
-        track 2
-        track 3
-
-Want:
-    1d array of scene names
-        ["Camp", "Tavern", "Mountains", ...]
-
-    2d array of tracks grouped by scene
-    row, column
-    tracks, scenes
-    j, i
-        [[T1S1, T1S2, T1S3, T1S4, ...],
-         [T2S1, T2S2, T2S3, T2S4, ...],
-         [T3S1, T3S2, T3S3, T3S4, ...]]
-            
-- Also need logic for a module object handling an empty track 
-
-["thing", "thing 2", "wowowowowowwo"]
+To do
+- Figure out how to handle long scene names
+-- Scrolling text?
+-- Just don't?

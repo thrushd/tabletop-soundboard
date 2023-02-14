@@ -9,8 +9,8 @@
 #include <OneButton.h>
 #include <Wire.h>
 
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+#define MODULE_SCREEN_WIDTH 128 // OLED display width, in pixels
+#define MODULE_SCREEN_HEIGHT 32 // OLED display height, in pixels
 #define OLED_RESET -1
 #define SCREEN_ADDRESS 0x3C
 #define GAIN_MIN 0
@@ -20,7 +20,7 @@
 
 class Module {
 public:
-    // Module();
+    Module();
     Module(int module_number, int button_pin, Track** tracks_in, AudioPlaySdWav* play_sd, AudioMixer4* mixer_left, AudioMixer4* mixer_right, TwoWire* twi, Encoder* knob);
     // void begin(int module_number, int button_pin, Track** tracks_in, AudioPlaySdWav* play_sd, AudioMixer4* mixer_left, AudioMixer4* mixer_right, TwoWire* twi, Encoder* knob);
     void update(int new_scene_index);

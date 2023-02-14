@@ -77,6 +77,8 @@ BL  -> NC
 #define ENCODER_B_PIN 34
 #define KNOB_SCALE 4
 
+#define MAIN_BUTTON_PIN 36
+
 #define N_MODULES 8
 
 #define CHIP_SELECT BUILTIN_SDCARD
@@ -89,14 +91,22 @@ int active_scene = 0; // the current active scene
 int last_active_scene = -1; // the one before that
 long new_position = 0; // position read from encoder
 long old_position = -1; // the one before that
+int knob_diff = 0; // difference between new position and old position since last read
+int selection = 0; // index of the highlighted scene
 
 char** scene_names;
 int n_scenes;
 Track** module_tracks;
 
+double universal_gain = 0.75;
+double gain_diff = 0;
+
 Adafruit_ST7789 main_display = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 
+GFXcanvas16 canvas(MAIN_SCREEN_WIDTH, MAIN_SCREEN_HEIGHT);
+
 OneButton knob_button = OneButton(ENCODER_BUTTON_PIN, true, true);
+OneButton main_button = OneButton(MAIN_BUTTON_PIN, true, true);
 
 Encoder knob(ENCODER_A_PIN, ENCODER_B_PIN);
 
@@ -111,25 +121,12 @@ Encoder knob(ENCODER_A_PIN, ENCODER_B_PIN);
 //     { 6, button_pins[6], module_tracks, &play_sd_wav_6, &left_mixer_1, &right_mixer_1, &Wire, &knob },
 //     { 7, button_pins[7], module_tracks, &play_sd_wav_7, &left_mixer_1, &right_mixer_1, &Wire, &knob }
 // };
+
+// BUG this doesn't work either
 // Module module_0 = Module(0, button_pins[0], module_tracks, &play_sd_wav_0, &left_mixer_0, &right_mixer_0, &Wire, &knob);
 
 char config_filename[] = { "config.toml" };
 char startup_gif_filename[] = { "startup.gif" };
-
-static void handle_encoder_single()
-{
-    Serial.println("Encoder single click");
-    // if encoder is pressed a new scene has been selected
-    active_scene = new_position;
-    if (active_scene != last_active_scene) {
-        // add indication of current active scene
-        // scene_names[active_scene] = ">" + scene_names[active_scene];
-        // // remove the last one
-        // scenerenos[last_active_scene].remove(0, 1);
-        last_active_scene = active_scene;
-    }
-    // update_main_display();
-}
 
 int size_of_toml_table(toml_table_t* table)
 {
@@ -432,34 +429,149 @@ void load_config()
 // // updates main display scenes
 void update_main_display()
 {
+    // character sizes in pixels, for later calculations
+    // size [n] character [width/height]
+    int size_1_c_w = 6;
+    int size_1_c_h = 8;
+    int size_2_c_w = 12;
+    int size_2_c_h = 16;
+    int size_3_c_w = 18;
+    int size_3_c_h = 24;
+
+    int side_offset = 24; // offset of side bar showing the selection indicator, allows for 12 size 3 characters
+    int bottom_offset = 24; // offset of bottom bar showing universal gain setting
+
+    int max_chars_2 = (MAIN_SCREEN_WIDTH - side_offset) / size_2_c_w; // maximum number of size 3 characters in a row
+    int max_chars_3 = (MAIN_SCREEN_WIDTH - side_offset) / size_3_c_w; // maximum number of size 3 characters in a row
+    int max_rows = (MAIN_SCREEN_HEIGHT - bottom_offset) / size_3_c_h; // maximum number of rows of text that can be shown
+
     // clear and set text parameters
-    main_display.fillScreen(ST77XX_BLACK);
-    main_display.setTextSize(2); // scale of 3 makes the characters 15x24
-    main_display.setTextColor(ST77XX_WHITE); // Draw white text
+    canvas.fillScreen(ST77XX_BLACK);
+    canvas.setTextSize(1); // scale of 3 makes the characters 18x24
+    canvas.setTextColor(ST77XX_WHITE); // Draw white text
+    canvas.setTextWrap(false); // if it's too long, oh well
+
     // if selection is larger than the current window bounds, move the window down
-    if (new_position > window_pos + 2) {
+    if (selection > window_pos + (max_rows - 1)) {
         window_pos++;
-        cursor_pos = 2;
+        cursor_pos = max_rows - 1;
     }
     // if selection is smaller than the current window bounds, move the window up
-    else if (new_position < window_pos) {
+    else if (selection < window_pos) {
         window_pos--;
         cursor_pos = 0;
     }
     // set the cursor position within the window
-    cursor_pos = new_position - window_pos;
-    
+    cursor_pos = selection - window_pos;
+
+    // draw volume slider
+    int v_x = 4 * size_2_c_w + 2;
+    int v_y = MAIN_SCREEN_HEIGHT - bottom_offset;
+    int v_w = MAIN_SCREEN_WIDTH - v_x - 2;
+    int v_h = bottom_offset;
+    int v_r = v_h / 3; // radius of position marker
+    int v_pos = (v_w - 2 * v_r) * (universal_gain / GAIN_MAX); // position of the marker on the line
+    canvas.drawLine(v_x, v_y + v_h / 2, v_x + v_w, v_y + v_h / 2, ST77XX_WHITE); // horizontal line
+    canvas.drawLine(v_x, v_y, v_x, v_y + v_h, ST77XX_WHITE); // left vertical
+    canvas.drawLine(v_x + v_w, v_y, v_x + v_w, v_y + v_h, ST77XX_WHITE); // right vertical
+    canvas.drawLine(v_x + v_w / 2, v_y + 4, v_x + v_w / 2, v_y + v_h - 4, ST77XX_WHITE); // center vertical
+    canvas.fillCircle(v_x + v_pos + v_r, v_y + v_h / 2, v_r, ST77XX_CYAN); // position marker
+
+    // draw gain
+    canvas.setTextSize(2);
+    canvas.setCursor(2, MAIN_SCREEN_HEIGHT - bottom_offset + (size_3_c_h - size_2_c_h) / 2 + 1);
+    canvas.printf("G%.1f", universal_gain);
+
+    // draw the cursor position
+    canvas.fillCircle(side_offset / 2, (size_3_c_h * cursor_pos) + size_3_c_h / 2, side_offset / 2 - 6, ST77XX_YELLOW);
+
     // draw all the text
     // if the length of the scene name is greater than the avialable characters downsize the text
     // center each name withing it's allotted vertical bar space
-    for (int i = 0; i < 10; i++) {
-        // i = 0, 1, 2, 3.. 9
-        main_display.setCursor(10, (i * 24) + 1);
-        if (i >= n_scenes) break;
-        main_display.print(scene_names[window_pos+i]);
+    for (int i = 0; i < max_rows; i++) {
+        // for each row draw the scene name, break if we go over the number of scenes though
+        if (i >= n_scenes)
+            break;
+
+        // // first determine which size text to use
+        // if (strlen(scene_names[i + window_pos]) > max_chars_3) {
+        //     // size 3 will overlap, go down a size and center
+        //     canvas.setTextSize(2);
+        //     canvas.setCursor(side_offset, (i * size_3_c_h) + (size_3_c_h - size_2_c_h) / 2);
+        // } else {
+        //     // size 3 will fit
+        //     canvas.setTextSize(3);
+        //     canvas.setCursor(side_offset, i * size_3_c_h);
+        // }
+
+        // canvas.setTextSize(3);
+        // canvas.setCursor(side_offset, i * size_3_c_h);
+        canvas.setTextSize(2);
+        canvas.setCursor(side_offset, (i * size_3_c_h) + (size_3_c_h - size_2_c_h) / 2);
+
+        // check if the active scene is being written to, if so change the color
+        if (i + window_pos == active_scene) {
+            canvas.setTextColor(ST77XX_MAGENTA);
+        } else {
+            canvas.setTextColor(ST77XX_WHITE);
+        }
+        // print out the scene name
+        canvas.print(scene_names[i + window_pos]);
     }
-    // draw the cursor
-    // main_display.fillRect(0, 24 * cursor_pos, MAIN_SCREEN_WIDTH, 24, ST77XX_ORANGE);
+    canvas.drawRect(0, 0, MAIN_SCREEN_WIDTH, MAIN_SCREEN_HEIGHT, ST77XX_GREEN);
+    canvas.drawLine(0, MAIN_SCREEN_HEIGHT - bottom_offset, MAIN_SCREEN_WIDTH, MAIN_SCREEN_HEIGHT - bottom_offset, ST77XX_GREEN);
+
+    main_display.drawRGBBitmap(0, 0, canvas.getBuffer(), canvas.width(), canvas.height());
+}
+
+static void handle_encoder_single()
+{
+    Serial.println("Encoder single click");
+    // if encoder is pressed, check if selection actually changes the scene
+    if (selection != active_scene) {
+        active_scene = selection;
+        update_main_display();
+    }
+}
+
+static void handle_main_single()
+{
+    Serial.println("Main single click");
+    // stop playing all tracks
+    play_sd_wav_0.stop();
+    play_sd_wav_1.stop();
+    play_sd_wav_2.stop();
+    play_sd_wav_3.stop();
+    play_sd_wav_4.stop();
+    play_sd_wav_5.stop();
+    play_sd_wav_6.stop();
+    play_sd_wav_7.stop();
+}
+
+// adjust global gain
+static void handle_main_hold()
+{
+    Serial.printf("UG: %0.3f GD: %0.3f\n", universal_gain, gain_diff);
+
+    universal_gain = universal_gain + gain_diff;
+
+    if (universal_gain >= GAIN_MAX)
+        universal_gain = GAIN_MAX;
+    else if (universal_gain < GAIN_MIN)
+        universal_gain = GAIN_MIN;
+
+    gain_diff = 0;
+    
+    // update main gain
+    left_final_mixer.gain(0, universal_gain);
+    left_final_mixer.gain(1, universal_gain);
+    right_final_mixer.gain(0, universal_gain);
+    right_final_mixer.gain(1, universal_gain);
+}
+
+float map_float(float x, float in_min, float in_max, float out_min, float out_max)
+{
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 void setup()
@@ -468,12 +580,15 @@ void setup()
     Wire.begin();
     AudioMemory(16);
     // wait for serial to open
-    while (!Serial) { }
+    // while (!Serial) { }
 
     Serial.println();
     Serial.println("starting this heckin trainwreck now");
 
     knob_button.attachClick(handle_encoder_single);
+
+    main_button.attachClick(handle_main_single);
+    main_button.attachDuringLongPress(handle_main_hold);
 
     // set up SD card
     Serial.print("initializing SD card... ");
@@ -504,28 +619,42 @@ void setup()
 
     // init gifplayer and play the startup animation
     init_player(&main_display);
-    // play_gif(startup_gif_filename);
+    play_gif(startup_gif_filename);
+
 }
 
 void loop()
 {
-    // read knob position & tick button
-    new_position = knob.read() / KNOB_SCALE;
+    // tick that button
     knob_button.tick();
+    main_button.tick();
 
-    // constrain the position between bounds
-    if (new_position > (N_MODULES - 1)) {
-        new_position = (N_MODULES - 1);
-        knob.write((N_MODULES - 1) * KNOB_SCALE);
-    } else if (new_position < 0) {
-        new_position = 0;
-        knob.write(0);
-    }
+    // read knob position and update
+    new_position = knob.read();
 
-    // if position has changed update the display
-    if ((new_position != old_position)) {
+    if (new_position != old_position) {
+        // get the difference
+        knob_diff = (old_position / KNOB_SCALE) - (new_position / KNOB_SCALE);
+        // find the gain difference and scale it to be within the 0-1 range
+        // gain_diff = double(((old_position - new_position)) * (GAIN_MAX - GAIN_MIN) / 80 + GAIN_MIN);
+        gain_diff = double(map_float((old_position - new_position), 0, 80, GAIN_MIN, GAIN_MAX));
+
+        // reset
         old_position = new_position;
-        Serial.printf("new_position: %d\n", new_position);
+        
+        // update position, but only if gain isn't being adjusted
+        if (!main_button.isLongPressed()) {
+            selection = selection + knob_diff;
+        }
+
+        // constrain the selection between bounds
+        if (selection >= n_scenes - 1) {
+            selection = n_scenes - 1;
+        } else if (selection < 0) {
+            selection = 0;
+        }
+        // reset diff
+        knob_diff = 0;
         update_main_display();
     }
 
