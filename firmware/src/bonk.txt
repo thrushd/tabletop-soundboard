@@ -1,4 +1,11 @@
 To do
+- Handle file not found error
+- All stop still doesn't work great, looping will dink it
 - Figure out how to handle long scene names
 -- Scrolling text?
 -- Just don't?
+
+Sources for audio
+https://tabletopaudio.com/ (ambiance)
+https://battlebards.com/#/tracks (paid, effects, ambiance, music)
+https://rpg.ambient-mixer.com/ (ambiance, collections of tracks by users, no easy download)

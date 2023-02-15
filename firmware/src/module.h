@@ -1,5 +1,6 @@
 #pragma once
 
+#include "helper_functions.h"
 #include "track.h"
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -20,17 +21,16 @@
 
 class Module {
 public:
-    Module();
-    Module(int module_number, int button_pin, Track** tracks_in, AudioPlaySdWav* play_sd, AudioMixer4* mixer_left, AudioMixer4* mixer_right, TwoWire* twi, Encoder* knob);
-    // void begin(int module_number, int button_pin, Track** tracks_in, AudioPlaySdWav* play_sd, AudioMixer4* mixer_left, AudioMixer4* mixer_right, TwoWire* twi, Encoder* knob);
+    Module(int module_number, int button_pin, AudioPlaySdWav* play_sd, AudioMixer4* mixer_left, AudioMixer4* mixer_right, TwoWire* twi, Encoder* knob);
     void update(int new_scene_index);
-
+    void init(Track** tracks_in);
+    void stop();
+    // module button, public so we can see if it's being held down
+    OneButton button;
 private:
     // pointer to array of track objects
     Track** tracks;
-    // current scene index
     int scene_index = -1;
-    // module number
     int module_number;
     // audio
     AudioPlaySdWav* play_sd;
@@ -44,8 +44,6 @@ private:
     TwoWire* twi;
     // button
     int button_pin;
-    // module button;
-    OneButton button;
     // encoder knob for main display
     Encoder* knob;
     long old_position = 0;
@@ -55,10 +53,12 @@ private:
     int enc_int_max = 80; // 4 counts per detent showing on 0.05 scale 4*20
 
     // functions
-    void init();
+    // void init();
     // LCD stuff
     void set_mp_addr();
     void update_display();
+    void display_empty();
+    void display_file_not_found();
     // audio stuff
     static void handle_single(void* ptr);
     static void handle_double(void* ptr);
@@ -72,5 +72,4 @@ private:
 
     void rect_progress_bar(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t progress, uint32_t duration);
     void volume_display(uint16_t x, uint16_t y, uint16_t w, uint16_t h, double gain, double max);
-    float map_float(float x, float in_min, float in_max, float out_min, float out_max);
 };

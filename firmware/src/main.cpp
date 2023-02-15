@@ -3,8 +3,8 @@
 #include "module.h"
 #include "toml.h"
 #include "track.h"
-#include <Adafruit_GFX.h> // Core graphics library
-#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
+#include <Adafruit_GFX.h>
+#include <Adafruit_ST7789.h>
 #include <Arduino.h>
 #include <Audio.h>
 #include <Encoder.h>
@@ -53,14 +53,8 @@ AudioConnection patchCord21(right_final_mixer, 0, pt8211_1, 1);
 AudioConnection patchCord22(left_final_mixer, 0, pt8211_1, 0);
 // GUItool: end automatically generated code
 
-#define MAIN_SCREEN_WIDTH 240 // display width, in pixels
-#define MAIN_SCREEN_HEIGHT 240 // display height, in pixels
+/* hardware definition
 
-#define TFT_CS 30
-#define TFT_RST 32 // Or set to -1 and connect to RESET pin
-#define TFT_DC 31
-
-/*
 Main display connections
 VCC -> VIN
 GND -> GND
@@ -70,8 +64,18 @@ CS  -> 30
 DC  -> 31
 RST -> 32
 BL  -> NC
+
+I2C
+SCL0: 19
+SDA0: 18
 */
 
+// screen
+#define TFT_CS 30
+#define TFT_RST 32 // Or set to -1 and connect to RESET pin
+#define TFT_DC 31
+
+// encoder knob
 #define ENCODER_BUTTON_PIN 35
 #define ENCODER_A_PIN 33
 #define ENCODER_B_PIN 34
@@ -79,16 +83,23 @@ BL  -> NC
 
 #define MAIN_BUTTON_PIN 36
 
-#define N_MODULES 8
+// module buttons
+const int button_pins[] = { 21, 20, 17, 16, 15, 14, 39, 38 };
+
+char config_filename[] = { "config.toml" };
+char startup_gif_filename[] = { "startup.gif" };
 
 #define CHIP_SELECT BUILTIN_SDCARD
 
-const int button_pins[] = { 21, 20, 19, 18, 17, 16, 15, 14 };
+// variables you shouldn't change
+#define N_MODULES 8
+#define MAIN_SCREEN_WIDTH 240 // display width, in pixels
+#define MAIN_SCREEN_HEIGHT 240 // display height, in pixels
 
 int window_pos = 0; // position of the window in the array, defined as the minimum
 int cursor_pos = 0; // position of the cursor in the window
-int active_scene = 0; // the current active scene
-int last_active_scene = -1; // the one before that
+int active_scene = -1; // the current active scene
+int last_active_scene = -2; // the one before that
 long new_position = 0; // position read from encoder
 long old_position = -1; // the one before that
 int knob_diff = 0; // difference between new position and old position since last read
@@ -98,7 +109,7 @@ char** scene_names;
 int n_scenes;
 Track** module_tracks;
 
-double universal_gain = 0.75;
+double universal_gain = 0.5;
 double gain_diff = 0;
 
 Adafruit_ST7789 main_display = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
@@ -110,24 +121,18 @@ OneButton main_button = OneButton(MAIN_BUTTON_PIN, true, true);
 
 Encoder knob(ENCODER_A_PIN, ENCODER_B_PIN);
 
-// BUG: when placed outside of 'setup' these declarations cause things to hang :/
-// Module modules[] = {
-//     { 0, button_pins[0], module_tracks, &play_sd_wav_0, &left_mixer_0, &right_mixer_0, &Wire, &knob },
-//     { 1, button_pins[1], module_tracks, &play_sd_wav_1, &left_mixer_0, &right_mixer_0, &Wire, &knob },
-//     { 2, button_pins[2], module_tracks, &play_sd_wav_2, &left_mixer_0, &right_mixer_0, &Wire, &knob },
-//     { 3, button_pins[3], module_tracks, &play_sd_wav_3, &left_mixer_0, &right_mixer_0, &Wire, &knob },
-//     { 4, button_pins[4], module_tracks, &play_sd_wav_4, &left_mixer_1, &right_mixer_1, &Wire, &knob },
-//     { 5, button_pins[5], module_tracks, &play_sd_wav_5, &left_mixer_1, &right_mixer_1, &Wire, &knob },
-//     { 6, button_pins[6], module_tracks, &play_sd_wav_6, &left_mixer_1, &right_mixer_1, &Wire, &knob },
-//     { 7, button_pins[7], module_tracks, &play_sd_wav_7, &left_mixer_1, &right_mixer_1, &Wire, &knob }
-// };
+Module modules[] = {
+    { 0, button_pins[0], &play_sd_wav_0, &left_mixer_0, &right_mixer_0, &Wire, &knob },
+    { 1, button_pins[1], &play_sd_wav_1, &left_mixer_0, &right_mixer_0, &Wire, &knob },
+    { 2, button_pins[2], &play_sd_wav_2, &left_mixer_0, &right_mixer_0, &Wire, &knob },
+    { 3, button_pins[3], &play_sd_wav_3, &left_mixer_0, &right_mixer_0, &Wire, &knob },
+    { 4, button_pins[4], &play_sd_wav_4, &left_mixer_1, &right_mixer_1, &Wire, &knob },
+    { 5, button_pins[5], &play_sd_wav_5, &left_mixer_1, &right_mixer_1, &Wire, &knob },
+    { 6, button_pins[6], &play_sd_wav_6, &left_mixer_1, &right_mixer_1, &Wire, &knob },
+    { 7, button_pins[7], &play_sd_wav_7, &left_mixer_1, &right_mixer_1, &Wire, &knob }
+};
 
-// BUG this doesn't work either
-// Module module_0 = Module(0, button_pins[0], module_tracks, &play_sd_wav_0, &left_mixer_0, &right_mixer_0, &Wire, &knob);
-
-char config_filename[] = { "config.toml" };
-char startup_gif_filename[] = { "startup.gif" };
-
+// number of entries in a given table
 int size_of_toml_table(toml_table_t* table)
 {
     for (int i = 0;; i++) {
@@ -197,6 +202,7 @@ Track table_to_track(toml_table_t* input_table, double default_gain, bool defaul
     return track;
 }
 
+// load config file into track array
 void load_config()
 {
     // first check if the file even exists
@@ -431,18 +437,18 @@ void update_main_display()
 {
     // character sizes in pixels, for later calculations
     // size [n] character [width/height]
-    int size_1_c_w = 6;
-    int size_1_c_h = 8;
+    // int size_1_c_w = 6;
+    // int size_1_c_h = 8;
     int size_2_c_w = 12;
     int size_2_c_h = 16;
-    int size_3_c_w = 18;
+    // int size_3_c_w = 18;
     int size_3_c_h = 24;
 
     int side_offset = 24; // offset of side bar showing the selection indicator, allows for 12 size 3 characters
     int bottom_offset = 24; // offset of bottom bar showing universal gain setting
 
-    int max_chars_2 = (MAIN_SCREEN_WIDTH - side_offset) / size_2_c_w; // maximum number of size 3 characters in a row
-    int max_chars_3 = (MAIN_SCREEN_WIDTH - side_offset) / size_3_c_w; // maximum number of size 3 characters in a row
+    // int max_chars_2 = (MAIN_SCREEN_WIDTH - side_offset) / size_2_c_w; // maximum number of size 3 characters in a row
+    // int max_chars_3 = (MAIN_SCREEN_WIDTH - side_offset) / size_3_c_w; // maximum number of size 3 characters in a row
     int max_rows = (MAIN_SCREEN_HEIGHT - bottom_offset) / size_3_c_h; // maximum number of rows of text that can be shown
 
     // clear and set text parameters
@@ -477,7 +483,7 @@ void update_main_display()
     canvas.drawLine(v_x + v_w / 2, v_y + 4, v_x + v_w / 2, v_y + v_h - 4, ST77XX_WHITE); // center vertical
     canvas.fillCircle(v_x + v_pos + v_r, v_y + v_h / 2, v_r, ST77XX_CYAN); // position marker
 
-    // draw gain
+    // draw gain text
     canvas.setTextSize(2);
     canvas.setCursor(2, MAIN_SCREEN_HEIGHT - bottom_offset + (size_3_c_h - size_2_c_h) / 2 + 1);
     canvas.printf("G%.1f", universal_gain);
@@ -518,15 +524,18 @@ void update_main_display()
         // print out the scene name
         canvas.print(scene_names[i + window_pos]);
     }
+
+    // pretty border
     canvas.drawRect(0, 0, MAIN_SCREEN_WIDTH, MAIN_SCREEN_HEIGHT, ST77XX_GREEN);
     canvas.drawLine(0, MAIN_SCREEN_HEIGHT - bottom_offset, MAIN_SCREEN_WIDTH, MAIN_SCREEN_HEIGHT - bottom_offset, ST77XX_GREEN);
 
+    // write it out baby
     main_display.drawRGBBitmap(0, 0, canvas.getBuffer(), canvas.width(), canvas.height());
 }
 
+// select scene
 static void handle_encoder_single()
 {
-    Serial.println("Encoder single click");
     // if encoder is pressed, check if selection actually changes the scene
     if (selection != active_scene) {
         active_scene = selection;
@@ -534,25 +543,18 @@ static void handle_encoder_single()
     }
 }
 
+// stop playing
 static void handle_main_single()
 {
-    Serial.println("Main single click");
     // stop playing all tracks
-    play_sd_wav_0.stop();
-    play_sd_wav_1.stop();
-    play_sd_wav_2.stop();
-    play_sd_wav_3.stop();
-    play_sd_wav_4.stop();
-    play_sd_wav_5.stop();
-    play_sd_wav_6.stop();
-    play_sd_wav_7.stop();
+    for (int i = 0; i < N_MODULES; i++) {
+        modules[i].stop();
+    }
 }
 
 // adjust global gain
 static void handle_main_hold()
 {
-    Serial.printf("UG: %0.3f GD: %0.3f\n", universal_gain, gain_diff);
-
     universal_gain = universal_gain + gain_diff;
 
     if (universal_gain >= GAIN_MAX)
@@ -561,7 +563,7 @@ static void handle_main_hold()
         universal_gain = GAIN_MIN;
 
     gain_diff = 0;
-    
+
     // update main gain
     left_final_mixer.gain(0, universal_gain);
     left_final_mixer.gain(1, universal_gain);
@@ -569,11 +571,25 @@ static void handle_main_hold()
     right_final_mixer.gain(1, universal_gain);
 }
 
-float map_float(float x, float in_min, float in_max, float out_min, float out_max)
+// i hate this so much T__T
+int check_holds()
 {
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    // check main button first
+    if (main_button.isLongPressed()) {
+        return selection;
+    }
+
+    // check modules next
+    for (int i = 0; i < N_MODULES; i++) {
+        if (modules[i].button.isLongPressed())
+            return selection;
+    }
+
+    // none are being held, so return the difference
+    return selection + knob_diff;
 }
 
+// le setup
 void setup()
 {
     Serial.begin(9600);
@@ -619,10 +635,14 @@ void setup()
 
     // init gifplayer and play the startup animation
     init_player(&main_display);
-    play_gif(startup_gif_filename);
+    // play_gif(startup_gif_filename);
 
+    for (int i = 0; i < N_MODULES; i++) {
+        modules[i].init(module_tracks);
+    }
 }
 
+// le loop
 void loop()
 {
     // tick that button
@@ -641,11 +661,8 @@ void loop()
 
         // reset
         old_position = new_position;
-        
-        // update position, but only if gain isn't being adjusted
-        if (!main_button.isLongPressed()) {
-            selection = selection + knob_diff;
-        }
+
+        selection = check_holds();
 
         // constrain the selection between bounds
         if (selection >= n_scenes - 1) {
@@ -659,5 +676,7 @@ void loop()
     }
 
     // update modules
-    // ...
+    for (int i = 0; i < N_MODULES; i++) {
+        modules[i].update(active_scene);
+    }
 }
