@@ -1,11 +1,17 @@
 To do
 - Handle file not found error
-- All stop still doesn't work great, looping will dink it
-- Figure out how to handle long scene names
+- USB audio
+- Figure out how to display long scene names
 -- Scrolling text?
 -- Just don't?
+
+Bugs
+- Sometimes audio just doens't work, weird clicking noises. Scene changes sometimes fix it
 
 Sources for audio
 https://tabletopaudio.com/ (ambiance)
 https://battlebards.com/#/tracks (paid, effects, ambiance, music)
 https://rpg.ambient-mixer.com/ (ambiance, collections of tracks by users, no easy download)
+
+Notes on audio formating
+! Only 16 bit PCM, 44100 Hz WAV files are supported. 

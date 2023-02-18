@@ -84,7 +84,7 @@ SDA0: 18
 #define MAIN_BUTTON_PIN 36
 
 // module buttons
-const int button_pins[] = { 21, 20, 17, 16, 15, 14, 39, 38 };
+const int button_pins[] = { 21, 20, 17, 16, 15, 14, 39, 29 };
 
 char config_filename[] = { "config.toml" };
 char startup_gif_filename[] = { "startup.gif" };
@@ -538,6 +538,16 @@ static void handle_encoder_single()
 {
     // if encoder is pressed, check if selection actually changes the scene
     if (selection != active_scene) {
+        // need to stop playing all tracks
+        play_sd_wav_0.stop();
+        play_sd_wav_1.stop();
+        play_sd_wav_2.stop();
+        play_sd_wav_3.stop();
+        play_sd_wav_4.stop();
+        play_sd_wav_5.stop();
+        play_sd_wav_6.stop();
+        play_sd_wav_7.stop();
+        // reset the active scene
         active_scene = selection;
         update_main_display();
     }

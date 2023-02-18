@@ -25,12 +25,12 @@ void Module::init(Track** tracks_in)
     display = Adafruit_SSD1306(MODULE_SCREEN_WIDTH, MODULE_SCREEN_HEIGHT, twi, OLED_RESET);
     display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
     display.clearDisplay(); // clear the buffer
-    
+
     display.setCursor(0, 0);
     display.setTextSize(2);
     display.setTextColor(SSD1306_WHITE);
     display.print("Started!");
-    
+
     display.display(); // display the empty screen
 }
 
@@ -39,26 +39,29 @@ void Module::update(int new_scene_index)
     set_mp_addr();
 
     // a scene has not been selected yet
-    if (new_scene_index < 0){
+    if (new_scene_index < 0) {
         return;
     }
 
     // new scene checks
     if (new_scene_index != scene_index) {
         scene_index = new_scene_index;
+        skip = false;
 
         // check if the filename is actually populated, min 5 characters for a valid file
-        if (strlen(tracks[scene_index][module_number].filename) < 5){
+        if (strlen(tracks[scene_index][module_number].filename) < 5) {
+            skip = true;
             display_empty();
             return;
         }
         // check if the filename is actually on the SD card
-        if (!SD.exists(tracks[scene_index][module_number].filename)){
+        if (!SD.exists(tracks[scene_index][module_number].filename)) {
+            skip = true;
             display_file_not_found();
             return;
         }
 
-        // update the track duration 
+        // update the track duration
         // need to play briefly since lengthMillis only returns while playing
         play_sd->play(tracks[scene_index][module_number].filename);
         // TODO, this seems hacky and might be bad downstream
@@ -74,17 +77,11 @@ void Module::update(int new_scene_index)
         }
     }
 
-    // check if the filename is actually populated, min 5 characters for a valid file
-    if (strlen(tracks[scene_index][module_number].filename) < 5){
-        display_empty();
+    // previously we determined that the filename given was trash, so just skip
+    if (skip) {
         return;
     }
 
-    // if (!SD.exists(tracks[scene_index][module_number].filename)){
-    //     display_file_not_found();
-    //     return;
-    // }
-    
     // update buttons
     button.tick();
 
@@ -107,7 +104,7 @@ void Module::update(int new_scene_index)
         // map the difference into the range of gain
         gain_diff = double(map_float(diff_int, enc_int_min, enc_int_max, GAIN_MIN, GAIN_MAX));
     }
-    
+
     mixer_left->gain(module_number % 4, tracks[scene_index][module_number].gain);
     mixer_right->gain(module_number % 4, tracks[scene_index][module_number].gain);
 
@@ -139,22 +136,22 @@ void Module::update_display()
     display.getTextBounds(tracks[scene_index][module_number].name, 0, 0, &text_x, &text_y, &text_w, &text_h);
     display.setCursor((MODULE_SCREEN_WIDTH - text_w) / 2, (MODULE_SCREEN_HEIGHT / 2 - text_h) / 2);
     display.print(tracks[scene_index][module_number].name);
-    
+
     // track length, count down when playing
     display.setTextSize(1);
     display.setCursor(6, 24);
     display.print(millis_to_hhmmss(track_duration - play_sd->positionMillis()));
-    
+
     // draw track progress
     rect_progress_bar(54, 24, 74, 8, play_sd->positionMillis(), track_duration);
-    
+
     // draw gain bar
     volume_display(26, 16, 72, 6, tracks[scene_index][module_number].gain, GAIN_MAX);
-    
+
     // gain number
     display.setCursor(104, 16);
     display.printf("G%0.1f", tracks[scene_index][module_number].gain);
-    
+
     // loop
     display.drawChar(6, 16, 0x4C, SSD1306_WHITE, SSD1306_BLACK, 1); // draw L
     if (tracks[scene_index][module_number].loop) {
@@ -162,7 +159,7 @@ void Module::update_display()
     } else {
         display.drawChar(0, 16, 0x2D, SSD1306_WHITE, SSD1306_BLACK, 1); // draw - if no
     }
-    
+
     // play
     display.drawChar(18, 16, 0x50, SSD1306_WHITE, SSD1306_BLACK, 1); // draw P
     if (tracks[scene_index][module_number].play) {
@@ -170,7 +167,7 @@ void Module::update_display()
     } else {
         display.drawChar(12, 16, 0x2D, SSD1306_WHITE, SSD1306_BLACK, 1); // draw - if no
     }
-    
+
     // play/pause indicator
     if (play_sd->isPlaying()) {
         // pause indicator is just two lines
@@ -185,13 +182,15 @@ void Module::update_display()
 }
 
 // display an empty screen
-void Module::display_empty(){
+void Module::display_empty()
+{
     display.clearDisplay();
     display.display();
 }
 
 // display a file not found error
-void Module::display_file_not_found(){
+void Module::display_file_not_found()
+{
     display.clearDisplay();
     display.setCursor(0, 0);
     display.setTextSize(1);
@@ -228,6 +227,8 @@ void Module::handle_hold(void* ptr)
 // process a single click event (play / pause, restart control)
 void Module::process_single()
 {
+    Serial.printf("%d module clicked!\n", module_number);
+    Serial.printf("Playing: %s", tracks[scene_index][module_number].filename);
     // track state can either be: playing, paused, or stopped
     // based on state decide how it should change
 
@@ -285,12 +286,13 @@ void Module::stop()
 {
     // if looping toggle
     if (tracks[scene_index][module_number].loop) {
-        play_sd->togglePlayPause();
-        return;
+        if (play_sd->isPlaying()) {
+            play_sd->togglePlayPause();
+            return;
+        }
     }
     // if paused toggle
     if (play_sd->isPaused()) {
-        play_sd->togglePlayPause();
         return;
     }
     // otherwise just stop

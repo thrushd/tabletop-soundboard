@@ -32,6 +32,7 @@ private:
     Track** tracks;
     int scene_index = -1;
     int module_number;
+    bool skip = false;
     // audio
     AudioPlaySdWav* play_sd;
     AudioMixer4* mixer_left;
