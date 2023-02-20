@@ -1,12 +1,13 @@
 To do
-- Handle file not found error
-- USB audio
 - Figure out how to display long scene names
 -- Scrolling text?
 -- Just don't?
+- Handle too long file names elegantly
 
 Bugs
-- Sometimes audio just doens't work, weird clicking noises. Scene changes sometimes fix it
+- Encoder kinda jumps around during gain movement.
+-- Might just need an encoder with 1 count per detent, instead of 4
+
 
 Sources for audio
 https://tabletopaudio.com/ (ambiance)
@@ -15,3 +16,6 @@ https://rpg.ambient-mixer.com/ (ambiance, collections of tracks by users, no eas
 
 Notes on audio formating
 ! Only 16 bit PCM, 44100 Hz WAV files are supported. 
+
+How to set the teensy to pass through to the speakers:
+https://www.addictivetips.com/windows-tips/output-mic-sound-to-speakers-windows-10/

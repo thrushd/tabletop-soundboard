@@ -14,43 +14,46 @@
 #include <SerialFlash.h>
 
 // GUItool: begin automatically generated code
-AudioPlaySdWav play_sd_wav_1; // xy=765.0000152587891,499.0000190734863
-AudioPlaySdWav play_sd_wav_2; // xy=765.0000152587891,539.0000228881836
-AudioPlaySdWav play_sd_wav_3; // xy=765.0000152587891,580.0000228881836
-AudioPlaySdWav play_sd_wav_4; // xy=765.0000190734863,624.0000190734863
-AudioPlaySdWav play_sd_wav_5; // xy=765.0000190734863,667.0000200271606
-AudioPlaySdWav play_sd_wav_0; // xy=766.0000152587891,455.000018119812
-AudioPlaySdWav play_sd_wav_6; // xy=765.0000190734863,708.000020980835
-AudioPlaySdWav play_sd_wav_7; // xy=766.0000190734863,748.0000228881836
-AudioMixer4 right_mixer_0; // xy=1033.0001907348633,660.0000190734863
-AudioMixer4 left_mixer_1; // xy=1034.0001907348633,539.0000553131104
-AudioMixer4 right_mixer_1; // xy=1034.0001907348633,732.0000228881836
-AudioMixer4 left_mixer_0; // xy=1036.0000305175781,469.000093460083
-AudioMixer4 right_final_mixer; // xy=1293.0000381469727,646.0000190734863
-AudioMixer4 left_final_mixer; // xy=1295.0000381469727,563.0000953674316
-AudioOutputPT8211 pt8211_1; // xy=1524,598
-AudioConnection patchCord1(play_sd_wav_1, 0, left_mixer_0, 1);
-AudioConnection patchCord2(play_sd_wav_1, 1, right_mixer_0, 1);
-AudioConnection patchCord3(play_sd_wav_2, 0, left_mixer_0, 2);
-AudioConnection patchCord4(play_sd_wav_2, 1, right_mixer_0, 2);
-AudioConnection patchCord5(play_sd_wav_3, 0, left_mixer_0, 3);
-AudioConnection patchCord6(play_sd_wav_3, 1, right_mixer_0, 3);
-AudioConnection patchCord7(play_sd_wav_4, 0, left_mixer_1, 0);
-AudioConnection patchCord8(play_sd_wav_4, 1, right_mixer_1, 0);
-AudioConnection patchCord9(play_sd_wav_5, 0, left_mixer_1, 1);
-AudioConnection patchCord10(play_sd_wav_5, 1, right_mixer_1, 1);
-AudioConnection patchCord11(play_sd_wav_0, 0, left_mixer_0, 0);
-AudioConnection patchCord12(play_sd_wav_0, 1, right_mixer_0, 0);
-AudioConnection patchCord13(play_sd_wav_6, 0, left_mixer_1, 2);
-AudioConnection patchCord14(play_sd_wav_6, 1, right_mixer_1, 2);
-AudioConnection patchCord15(play_sd_wav_7, 0, left_mixer_1, 3);
-AudioConnection patchCord16(play_sd_wav_7, 1, right_mixer_1, 3);
-AudioConnection patchCord17(right_mixer_0, 0, right_final_mixer, 0);
-AudioConnection patchCord18(left_mixer_1, 0, left_final_mixer, 1);
-AudioConnection patchCord19(right_mixer_1, 0, right_final_mixer, 1);
-AudioConnection patchCord20(left_mixer_0, 0, left_final_mixer, 0);
-AudioConnection patchCord21(right_final_mixer, 0, pt8211_1, 1);
-AudioConnection patchCord22(left_final_mixer, 0, pt8211_1, 0);
+AudioPlaySdWav           play_sd_wav_1;     //xy=765.0000152587891,499.0000190734863
+AudioPlaySdWav           play_sd_wav_2;     //xy=765.0000152587891,539.0000228881836
+AudioPlaySdWav           play_sd_wav_3;     //xy=765.0000152587891,580.0000228881836
+AudioPlaySdWav           play_sd_wav_4;     //xy=765.0000190734863,624.0000190734863
+AudioPlaySdWav           play_sd_wav_5;     //xy=765.0000190734863,667.0000200271606
+AudioPlaySdWav           play_sd_wav_0;     //xy=766.0000152587891,455.000018119812
+AudioPlaySdWav           play_sd_wav_6;     //xy=765.0000190734863,708.000020980835
+AudioPlaySdWav           play_sd_wav_7;     //xy=766.0000190734863,748.0000228881836
+AudioMixer4              right_mixer_0;         //xy=1033.0001907348633,660.0000190734863
+AudioMixer4              left_mixer_1;         //xy=1034.0001907348633,539.0000553131104
+AudioMixer4              right_mixer_1;         //xy=1034.0001907348633,732.0000228881836
+AudioMixer4              left_mixer_0;         //xy=1036.0000305175781,469.000093460083
+AudioMixer4              right_final_mixer;         //xy=1293.0000381469727,646.0000190734863
+AudioMixer4              left_final_mixer;         //xy=1295.0000381469727,563.0000953674316
+AudioOutputUSB           usb1;           //xy=1522,655
+AudioOutputPT8211        pt8211_1;       //xy=1524,598
+AudioConnection          patchCord1(play_sd_wav_1, 0, left_mixer_0, 1);
+AudioConnection          patchCord2(play_sd_wav_1, 1, right_mixer_0, 1);
+AudioConnection          patchCord3(play_sd_wav_2, 0, left_mixer_0, 2);
+AudioConnection          patchCord4(play_sd_wav_2, 1, right_mixer_0, 2);
+AudioConnection          patchCord5(play_sd_wav_3, 0, left_mixer_0, 3);
+AudioConnection          patchCord6(play_sd_wav_3, 1, right_mixer_0, 3);
+AudioConnection          patchCord7(play_sd_wav_4, 0, left_mixer_1, 0);
+AudioConnection          patchCord8(play_sd_wav_4, 1, right_mixer_1, 0);
+AudioConnection          patchCord9(play_sd_wav_5, 0, left_mixer_1, 1);
+AudioConnection          patchCord10(play_sd_wav_5, 1, right_mixer_1, 1);
+AudioConnection          patchCord11(play_sd_wav_0, 0, left_mixer_0, 0);
+AudioConnection          patchCord12(play_sd_wav_0, 1, right_mixer_0, 0);
+AudioConnection          patchCord13(play_sd_wav_6, 0, left_mixer_1, 2);
+AudioConnection          patchCord14(play_sd_wav_6, 1, right_mixer_1, 2);
+AudioConnection          patchCord15(play_sd_wav_7, 0, left_mixer_1, 3);
+AudioConnection          patchCord16(play_sd_wav_7, 1, right_mixer_1, 3);
+AudioConnection          patchCord17(right_mixer_0, 0, right_final_mixer, 0);
+AudioConnection          patchCord18(left_mixer_1, 0, left_final_mixer, 1);
+AudioConnection          patchCord19(right_mixer_1, 0, right_final_mixer, 1);
+AudioConnection          patchCord20(left_mixer_0, 0, left_final_mixer, 0);
+AudioConnection          patchCord21(right_final_mixer, 0, pt8211_1, 1);
+AudioConnection          patchCord22(right_final_mixer, 0, usb1, 1);
+AudioConnection          patchCord23(left_final_mixer, 0, pt8211_1, 0);
+AudioConnection          patchCord24(left_final_mixer, 0, usb1, 0);
 // GUItool: end automatically generated code
 
 /* hardware definition
@@ -604,7 +607,7 @@ void setup()
 {
     Serial.begin(9600);
     Wire.begin();
-    AudioMemory(16);
+    AudioMemory(32);
     // wait for serial to open
     // while (!Serial) { }
 
@@ -689,4 +692,8 @@ void loop()
     for (int i = 0; i < N_MODULES; i++) {
         modules[i].update(active_scene);
     }
+
+    // if (millis() % 500 > 400){
+    //     Serial.printf("Audio memory usage: %d/%d\n", AudioMemoryUsage(), AudioMemoryUsageMax());
+    // }
 }

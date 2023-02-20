@@ -36,8 +36,6 @@ void Module::init(Track** tracks_in)
 
 void Module::update(int new_scene_index)
 {
-    set_mp_addr();
-
     // a scene has not been selected yet
     if (new_scene_index < 0) {
         return;
@@ -47,6 +45,8 @@ void Module::update(int new_scene_index)
     if (new_scene_index != scene_index) {
         scene_index = new_scene_index;
         skip = false;
+        play_flag = false;
+        loop_flag = false;
 
         // check if the filename is actually populated, min 5 characters for a valid file
         if (strlen(tracks[scene_index][module_number].filename) < 5) {
@@ -68,13 +68,18 @@ void Module::update(int new_scene_index)
         while (!play_sd->isPlaying()) { } // block until the wav header is parsed, otherwise lengthMillis returns nothing
         track_duration = play_sd->lengthMillis();
         play_sd->stop();
-        // start playing if play is set
+
+        // TODO the loop flag causes tracks to start playing immediately, even when play is set to false
+
+        // set flags
         if (tracks[scene_index][module_number].play) {
-            play_sd->play(tracks[scene_index][module_number].filename);
-            // set the play flag if we should be looping
-            if (tracks[scene_index][module_number].loop)
-                play_flag = true;
+            play_flag = true;
         }
+        // // set the play flag if we should be looping
+        // if (tracks[scene_index][module_number].loop) {
+        //     loop_flag = true;
+        // }
+        return;
     }
 
     // previously we determined that the filename given was trash, so just skip
@@ -82,12 +87,18 @@ void Module::update(int new_scene_index)
         return;
     }
 
+    // second time through the loop, start playing
+    if (play_flag) {
+        play_flag = false;
+        play_sd->play(tracks[scene_index][module_number].filename);
+    }
+
     // update buttons
     button.tick();
 
     // restart if the track finished and we want to loop
     if (tracks[scene_index][module_number].loop) {
-        if (play_flag && play_sd->isStopped()) {
+        if (loop_flag && play_sd->isStopped()) {
             play_sd->play(tracks[scene_index][module_number].filename);
         }
     }
@@ -122,6 +133,7 @@ void Module::set_mp_addr()
 // main display update function
 void Module::update_display()
 {
+    set_mp_addr();
     display.clearDisplay(); // clear the buffer
     // track name, centered
     // rescale text size if name is too long to fit as size 2, can currently fit 10 chars before newline with size 2, 21 chars on a single line with size 1, will wrap if over that for a max total of 42
@@ -184,6 +196,7 @@ void Module::update_display()
 // display an empty screen
 void Module::display_empty()
 {
+    set_mp_addr();
     display.clearDisplay();
     display.display();
 }
@@ -191,6 +204,7 @@ void Module::display_empty()
 // display a file not found error
 void Module::display_file_not_found()
 {
+    set_mp_addr();
     display.clearDisplay();
     display.setCursor(0, 0);
     display.setTextSize(1);
@@ -228,7 +242,7 @@ void Module::handle_hold(void* ptr)
 void Module::process_single()
 {
     Serial.printf("%d module clicked!\n", module_number);
-    Serial.printf("Playing: %s", tracks[scene_index][module_number].filename);
+    Serial.printf("Playing: %s\n", tracks[scene_index][module_number].filename);
     // track state can either be: playing, paused, or stopped
     // based on state decide how it should change
 
@@ -237,7 +251,7 @@ void Module::process_single()
         // if stopped it's the first time through and we need to play
         if (play_sd->isStopped()) {
             play_sd->play(tracks[scene_index][module_number].filename);
-            play_flag = true;
+            loop_flag = true;
             return;
         }
         // otherwise we can toggle

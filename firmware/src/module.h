@@ -39,6 +39,7 @@ private:
     AudioMixer4* mixer_right;
     int mixer_channel_number;
     bool play_flag = false;
+    bool loop_flag = false;
     uint32_t track_duration;
     // display
     Adafruit_SSD1306 display;
