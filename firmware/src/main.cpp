@@ -648,7 +648,7 @@ void setup()
 
     // init gifplayer and play the startup animation
     init_player(&main_display);
-    // play_gif(startup_gif_filename);
+    play_gif(startup_gif_filename);
 
     for (int i = 0; i < N_MODULES; i++) {
         modules[i].init(module_tracks);

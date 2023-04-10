@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "TTSB")(type "KiCad")(uri "${KIPRJMOD}/lib_symbol.kicad_sym")(options "")(descr "Project library for tabletop soundboard"))
+)

@@ -1,0 +1,66 @@
+(footprint "ER-TFT013-2" (version 20221018) (generator pcbnew)
+  (layer "F.Cu")
+  (descr "Display, TFT, 240x240, SPI, ST7789")
+  (attr through_hole)
+  (fp_text reference "REF**" (at -11.1 -13.75) (layer "F.SilkS")
+      (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 0533baa5-ed2f-4257-999c-037b0394b710)
+  )
+  (fp_text value "ER-TFT013-2" (at 0 19.95) (layer "F.Fab")
+      (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp a72b0127-9669-487c-9984-bd0c876e625f)
+  )
+  (fp_rect (start 13.08 16.16) (end -13.08 -13.06)
+    (stroke (width 0.12) (type solid)) (fill none) (layer "F.SilkS") (tstamp 824722e2-2db6-4bec-a292-03a5dd60da56))
+  (fp_circle (center -1.78 9.03) (end -1.28 9.03)
+    (stroke (width 0.12) (type solid)) (fill solid) (layer "F.SilkS") (tstamp 4a8c74ac-4fc1-43f0-830c-4a197e41376f))
+  (fp_circle (center 8.22 9.03) (end 8.72 9.03)
+    (stroke (width 0.12) (type solid)) (fill solid) (layer "F.SilkS") (tstamp 5d467c21-7aa3-45d3-b8d1-752947147ad4))
+  (fp_rect (start -13.2 -13.15) (end 13.17 16.65)
+    (stroke (width 0.05) (type default)) (fill none) (layer "F.CrtYd") (tstamp b1d87af8-528d-470a-9413-8374eb234120))
+  (pad "1" smd rect (at 6.42 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp 656bd5bc-d4ba-471f-adcc-af4f64ca66c8))
+  (pad "2" smd rect (at 5.72 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp b22c6fc9-691c-4fdb-ab2f-9cfa4a4d4d4c))
+  (pad "3" smd rect (at 5.02 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp 9ef87c72-42c8-46c3-a68d-1b3b5197eb0e))
+  (pad "4" smd rect (at 4.32 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp f18718f8-5a80-437d-aa2a-eff92f7626f3))
+  (pad "5" smd rect (at 3.62 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp 27028273-987f-4c0b-8683-a807fe528d35))
+  (pad "6" smd rect (at 2.92 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp bad06634-eae0-44e9-9b7b-81a765a08b9b))
+  (pad "7" smd rect (at 2.22 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp 218795fc-b116-430f-b3d4-7a28bdeab1f7))
+  (pad "8" smd rect (at 1.52 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp 7480cd1b-01a0-455b-9b16-c408289f3b61))
+  (pad "9" smd rect (at 0.82 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp 318b59d5-99e2-4b0a-8c2b-018d7a0babd6))
+  (pad "10" smd rect (at 0.12 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp 0de305aa-0ced-47e9-a132-6eed6afe2db4))
+  (pad "11" smd rect (at -0.58 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp bffe18d9-3a5d-4e7c-a747-807740d44b1a))
+  (pad "12" smd rect (at -1.28 5.03 180) (size 0.35 3) (layers "F.Cu" "F.Paste" "F.Mask")
+    (thermal_bridge_angle 45) (tstamp 1f1cccb2-141a-4048-9542-db7b7d9de812))
+  (group "" (id bae461f5-32c7-4bd2-b05a-4546af27b0b2)
+    (members
+      0de305aa-0ced-47e9-a132-6eed6afe2db4
+      1f1cccb2-141a-4048-9542-db7b7d9de812
+      218795fc-b116-430f-b3d4-7a28bdeab1f7
+      27028273-987f-4c0b-8683-a807fe528d35
+      318b59d5-99e2-4b0a-8c2b-018d7a0babd6
+      656bd5bc-d4ba-471f-adcc-af4f64ca66c8
+      7480cd1b-01a0-455b-9b16-c408289f3b61
+      9ef87c72-42c8-46c3-a68d-1b3b5197eb0e
+      b22c6fc9-691c-4fdb-ab2f-9cfa4a4d4d4c
+      bad06634-eae0-44e9-9b7b-81a765a08b9b
+      bffe18d9-3a5d-4e7c-a747-807740d44b1a
+      f18718f8-5a80-437d-aa2a-eff92f7626f3
+    )
+  )
+  (model "${KIPRJMOD}/3d_models/ER-TFT013-2_tight.stp"
+    (offset (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz -90 0 0))
+  )
+)

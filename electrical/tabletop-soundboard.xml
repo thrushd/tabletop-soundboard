@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>D:\Users\Dylan\Documents\GitHub\tabletop-soundboard\electrical\tabletop-soundboard.kicad_sch</source>
+    <date>2/24/2023 10:56:02 PM</date>
+    <tool>Eeschema (7.0.0)</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>Tabletop Soundboard</title>
+        <company/>
+        <rev>0</rev>
+        <date>2023-02-21</date>
+        <source>tabletop-soundboard.kicad_sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="J1">
+      <value>~</value>
+      <footprint>tabletop-soundboard:M.2_connector_TE-2199230-4</footprint>
+      <libsource lib="tabletop-soundboard" part="micromod-teensy" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="tabletop-soundboard.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7a569cf7-c117-4b51-8a16-48233c8f42d4</tstamps>
+    </comp>
+    <comp ref="J2">
+      <value>USB_C_Receptacle_USB2.0</value>
+      <footprint>Connector_USB:USB_C_Receptacle_GCT_USB4085</footprint>
+      <datasheet>https://www.usb.org/sites/default/files/documents/usb_type-c.zip</datasheet>
+      <libsource lib="Connector" part="USB_C_Receptacle_USB2.0" description="USB 2.0-only Type-C Receptacle connector"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="tabletop-soundboard.kicad_sch"/>
+      <property name="ki_description" value="USB 2.0-only Type-C Receptacle connector"/>
+      <property name="ki_keywords" value="usb universal serial bus type-C USB2.0"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>325cdbc8-8090-4aa1-8c34-2a8143e74261</tstamps>
+    </comp>
+    <comp ref="J3">
+      <value>~</value>
+      <footprint>tabletop-soundboard:standoff_9774025151R</footprint>
+      <datasheet>https://cdn.sparkfun.com/assets/f/d/2/b/e/MicroMod_Reflowable_Standoff.pdf</datasheet>
+      <libsource lib="tabletop-soundboard" part="standoff-9774025151R" description="Micromod standoff"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="tabletop-soundboard.kicad_sch"/>
+      <property name="ki_description" value="Micromod standoff"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2fb57152-919c-4cd1-b3d5-e1424c6e0545</tstamps>
+    </comp>
+    <comp ref="R1">
+      <value>R</value>
+      <footprint>Resistor_SMD:R_0201_0603Metric</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="tabletop-soundboard.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ec7369f5-0c4c-4b39-8a2d-a2b85a546b8d</tstamps>
+    </comp>
+    <comp ref="SW1">
+      <value>rotary-encoder-switch</value>
+      <footprint>tabletop-soundboard:encoder_PEC12R-4215F-S0024</footprint>
+      <datasheet>https://www.bourns.com/docs/Product-Datasheets/PEC12R.pdf</datasheet>
+      <libsource lib="tabletop-soundboard" part="rotary-encoder-switch" description="Rotary encoder, dual channel, incremental quadrate outputs, with switch"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="tabletop-soundboard.kicad_sch"/>
+      <property name="ki_description" value="Rotary encoder, dual channel, incremental quadrate outputs, with switch"/>
+      <property name="ki_keywords" value="rotary switch encoder switch push button"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8fc338e1-2f69-40d3-85d4-c5bfa74a2151</tstamps>
+    </comp>
+    <comp ref="U1">
+      <value>TCA9548APWR</value>
+      <footprint>Package_SO:TSSOP-24_4.4x7.8mm_P0.65mm</footprint>
+      <datasheet>http://www.ti.com/lit/ds/symlink/tca9548a.pdf</datasheet>
+      <libsource lib="Interface_Expansion" part="TCA9548APWR" description="Low voltage 8-channel I2C switch with reset, TSSOP-24"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="tabletop-soundboard.kicad_sch"/>
+      <property name="ki_description" value="Low voltage 8-channel I2C switch with reset, TSSOP-24"/>
+      <property name="ki_keywords" value="Low voltage 8-channel I2C switch with reset"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>907231df-c42f-4f0d-a2ec-85ec8bb0e9c1</tstamps>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="Connector" part="USB_C_Receptacle_USB2.0">
+      <description>USB 2.0-only Type-C Receptacle connector</description>
+      <docs>https://www.usb.org/sites/default/files/documents/usb_type-c.zip</docs>
+      <footprints>
+        <fp>USB*C*Receptacle*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">USB_C_Receptacle_USB2.0</field>
+        <field name="Datasheet">https://www.usb.org/sites/default/files/documents/usb_type-c.zip</field>
+      </fields>
+      <pins>
+        <pin num="A1" name="GND" type="passive"/>
+        <pin num="A4" name="VBUS" type="passive"/>
+        <pin num="A5" name="CC1" type="bidirectional"/>
+        <pin num="A6" name="D+" type="bidirectional"/>
+        <pin num="A7" name="D-" type="bidirectional"/>
+        <pin num="A8" name="SBU1" type="bidirectional"/>
+        <pin num="A9" name="VBUS" type="passive"/>
+        <pin num="A12" name="GND" type="passive"/>
+        <pin num="B1" name="GND" type="passive"/>
+        <pin num="B4" name="VBUS" type="passive"/>
+        <pin num="B5" name="CC2" type="bidirectional"/>
+        <pin num="B6" name="D+" type="bidirectional"/>
+        <pin num="B7" name="D-" type="bidirectional"/>
+        <pin num="B8" name="SBU2" type="bidirectional"/>
+        <pin num="B9" name="VBUS" type="passive"/>
+        <pin num="B12" name="GND" type="passive"/>
+        <pin num="S1" name="SHIELD" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R">
+      <description>Resistor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Interface_Expansion" part="TCA9548APWR">
+      <description>Low voltage 8-channel I2C switch with reset, TSSOP-24</description>
+      <docs>http://www.ti.com/lit/ds/symlink/tca9548a.pdf</docs>
+      <footprints>
+        <fp>TSSOP*4.4x7.8mm*P0.65mm*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">TCA9548APWR</field>
+        <field name="Footprint">Package_SO:TSSOP-24_4.4x7.8mm_P0.65mm</field>
+        <field name="Datasheet">http://www.ti.com/lit/ds/symlink/tca9548a.pdf</field>
+      </fields>
+      <pins>
+        <pin num="1" name="A0" type="input"/>
+        <pin num="2" name="A1" type="input"/>
+        <pin num="3" name="~{RESET}" type="input"/>
+        <pin num="4" name="SD0" type="bidirectional"/>
+        <pin num="5" name="SC0" type="output"/>
+        <pin num="6" name="SD1" type="bidirectional"/>
+        <pin num="7" name="SC1" type="output"/>
+        <pin num="8" name="SD2" type="bidirectional"/>
+        <pin num="9" name="SC2" type="output"/>
+        <pin num="10" name="SD3" type="bidirectional"/>
+        <pin num="11" name="SC3" type="output"/>
+        <pin num="12" name="GND" type="power_in"/>
+        <pin num="13" name="SD4" type="bidirectional"/>
+        <pin num="14" name="SC4" type="output"/>
+        <pin num="15" name="SD5" type="bidirectional"/>
+        <pin num="16" name="SC5" type="output"/>
+        <pin num="17" name="SD6" type="bidirectional"/>
+        <pin num="18" name="SC6" type="output"/>
+        <pin num="19" name="SD7" type="bidirectional"/>
+        <pin num="20" name="SC7" type="output"/>
+        <pin num="21" name="A2" type="input"/>
+        <pin num="22" name="SCL" type="input"/>
+        <pin num="23" name="SDA" type="bidirectional"/>
+        <pin num="24" name="VCC" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="tabletop-soundboard" part="micromod-teensy">
+      <fields>
+        <field name="Reference">J</field>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="power_in"/>
+        <pin num="2" name="3.3V" type="power_in"/>
+        <pin num="3" name="USB_D+" type="bidirectional"/>
+        <pin num="4" name="3.3V_EN/28" type="input"/>
+        <pin num="5" name="USB_D-" type="bidirectional"/>
+        <pin num="6" name="RESET/ON_OFF" type="input"/>
+        <pin num="7" name="GND" type="passive"/>
+        <pin num="8" name="G11/27" type="bidirectional"/>
+        <pin num="9" name="USB_VIN/V_USB" type="power_in"/>
+        <pin num="10" name="D0/4" type="bidirectional"/>
+        <pin num="11" name="BOOT/PROG" type="input"/>
+        <pin num="12" name="I2C_SDA/18" type="bidirectional"/>
+        <pin num="13" name="N/C" type="no_connect"/>
+        <pin num="14" name="I2C_SCL/19" type="bidirectional"/>
+        <pin num="15" name="N/C" type="no_connect"/>
+        <pin num="16" name="I2C_INT/29" type="bidirectional"/>
+        <pin num="17" name="UART_TX1/1" type="bidirectional"/>
+        <pin num="18" name="D1/5" type="bidirectional"/>
+        <pin num="19" name="UART_RX1/0" type="bidirectional"/>
+        <pin num="20" name="UART_RX2/16" type="bidirectional"/>
+        <pin num="21" name="N/C" type="no_connect"/>
+        <pin num="22" name="UART_TX2/17" type="bidirectional"/>
+        <pin num="23" name="N/C" type="no_connect"/>
+        <pin num="32" name="PWM0/3" type="bidirectional"/>
+        <pin num="33" name="GND" type="passive"/>
+        <pin num="34" name="A0/14" type="bidirectional"/>
+        <pin num="35" name="USBHOST_D+" type="bidirectional"/>
+        <pin num="36" name="GND" type="passive"/>
+        <pin num="37" name="USBHOST_D-" type="bidirectional"/>
+        <pin num="38" name="A1/15" type="bidirectional"/>
+        <pin num="39" name="GND" type="passive"/>
+        <pin num="40" name="G0/40" type="bidirectional"/>
+        <pin num="41" name="CAN_RX/30" type="bidirectional"/>
+        <pin num="42" name="G1/41" type="bidirectional"/>
+        <pin num="43" name="CAN_TX/31" type="bidirectional"/>
+        <pin num="44" name="G2/42" type="bidirectional"/>
+        <pin num="45" name="GND" type="passive"/>
+        <pin num="46" name="G3/43" type="bidirectional"/>
+        <pin num="47" name="PWM1/2" type="bidirectional"/>
+        <pin num="48" name="G4/44" type="bidirectional"/>
+        <pin num="49" name="BATT_VIN/22" type="power_in"/>
+        <pin num="50" name="AUD_BCLK/21" type="bidirectional"/>
+        <pin num="51" name="I2C_SDA1/25" type="bidirectional"/>
+        <pin num="52" name="AUD_LRCLK/20" type="bidirectional"/>
+        <pin num="53" name="I2C_SCL1/24" type="bidirectional"/>
+        <pin num="54" name="AUD_IN/8" type="bidirectional"/>
+        <pin num="55" name="SPI_CS/10" type="bidirectional"/>
+        <pin num="56" name="AUD_OUT/7" type="bidirectional"/>
+        <pin num="57" name="SPI_SCK/13" type="bidirectional"/>
+        <pin num="58" name="AUD_MCLK/23" type="bidirectional"/>
+        <pin num="59" name="SPI_COPI/11" type="bidirectional"/>
+        <pin num="60" name="SDIO_SCK/36" type="bidirectional"/>
+        <pin num="61" name="SPI_CIPO/12" type="bidirectional"/>
+        <pin num="62" name="SDIO_CMD/37" type="bidirectional"/>
+        <pin num="63" name="G10/33" type="bidirectional"/>
+        <pin num="64" name="SDIO_DATA0/35" type="bidirectional"/>
+        <pin num="65" name="G9/32" type="bidirectional"/>
+        <pin num="66" name="SDIO_DATA1/34" type="bidirectional"/>
+        <pin num="67" name="G8/26" type="bidirectional"/>
+        <pin num="68" name="SDIO_DATA2/39" type="bidirectional"/>
+        <pin num="69" name="G7/9" type="bidirectional"/>
+        <pin num="70" name="SDIO_DATA3/38" type="bidirectional"/>
+        <pin num="71" name="G6/6" type="bidirectional"/>
+        <pin num="72" name="RTC_3V_BATT" type="power_in"/>
+        <pin num="73" name="G5/45" type="bidirectional"/>
+        <pin num="74" name="3.3V" type="passive"/>
+        <pin num="75" name="GND" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="tabletop-soundboard" part="rotary-encoder-switch">
+      <description>Rotary encoder, dual channel, incremental quadrate outputs, with switch</description>
+      <docs>https://www.bourns.com/docs/Product-Datasheets/PEC12R.pdf</docs>
+      <footprints>
+        <fp>RotaryEncoder*Switch*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">SW</field>
+        <field name="Value">rotary-encoder-switch</field>
+        <field name="Footprint">tabletop-soundboard:encoder_PEC12R-4215F-S0024</field>
+        <field name="Datasheet">https://www.bourns.com/docs/Product-Datasheets/PEC12R.pdf</field>
+      </fields>
+      <pins>
+        <pin num="1" name="S1" type="passive"/>
+        <pin num="2" name="S2" type="passive"/>
+        <pin num="A" name="A" type="passive"/>
+        <pin num="B" name="B" type="passive"/>
+        <pin num="C" name="C" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="tabletop-soundboard" part="standoff-9774025151R">
+      <description>Micromod standoff</description>
+      <docs>https://cdn.sparkfun.com/assets/f/d/2/b/e/MicroMod_Reflowable_Standoff.pdf</docs>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Footprint">tabletop-soundboard:standoff_9774025151R</field>
+        <field name="Datasheet">https://cdn.sparkfun.com/assets/f/d/2/b/e/MicroMod_Reflowable_Standoff.pdf</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="Connector">
+      <uri>C:\Program Files\KiCad\7.0\share\kicad\symbols\/Connector.kicad_sym</uri>
+    </library>
+    <library logical="Device">
+      <uri>C:\Program Files\KiCad\7.0\share\kicad\symbols\/Device.kicad_sym</uri>
+    </library>
+    <library logical="Interface_Expansion">
+      <uri>C:\Program Files\KiCad\7.0\share\kicad\symbols\/Interface_Expansion.kicad_sym</uri>
+    </library>
+    <library logical="tabletop-soundboard">
+      <uri>D:\Users\Dylan\Documents\GitHub\tabletop-soundboard\electrical/tabletop-soundboard.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="GND">
+      <node ref="J3" pin="1" pintype="passive"/>
+    </net>
+    <net code="2" name="Net-(J1-3.3V-Pad2)">
+      <node ref="J1" pin="2" pinfunction="3.3V" pintype="power_in"/>
+      <node ref="J1" pin="74" pinfunction="3.3V" pintype="passive"/>
+    </net>
+    <net code="3" name="Net-(J1-GND-Pad1)">
+      <node ref="J1" pin="1" pinfunction="GND" pintype="power_in"/>
+      <node ref="J1" pin="33" pinfunction="GND" pintype="passive"/>
+      <node ref="J1" pin="36" pinfunction="GND" pintype="passive"/>
+      <node ref="J1" pin="39" pinfunction="GND" pintype="passive"/>
+      <node ref="J1" pin="45" pinfunction="GND" pintype="passive"/>
+      <node ref="J1" pin="7" pinfunction="GND" pintype="passive"/>
+      <node ref="J1" pin="75" pinfunction="GND" pintype="passive"/>
+    </net>
+    <net code="4" name="Net-(J2-GND-PadA1)">
+      <node ref="J2" pin="A1" pinfunction="GND" pintype="passive"/>
+      <node ref="J2" pin="A12" pinfunction="GND" pintype="passive"/>
+      <node ref="J2" pin="B1" pinfunction="GND" pintype="passive"/>
+      <node ref="J2" pin="B12" pinfunction="GND" pintype="passive"/>
+    </net>
+    <net code="5" name="Net-(J2-VBUS-PadA4)">
+      <node ref="J2" pin="A4" pinfunction="VBUS" pintype="passive"/>
+      <node ref="J2" pin="A9" pinfunction="VBUS" pintype="passive"/>
+      <node ref="J2" pin="B4" pinfunction="VBUS" pintype="passive"/>
+      <node ref="J2" pin="B9" pinfunction="VBUS" pintype="passive"/>
+    </net>
+    <net code="6" name="unconnected-(J1-3.3V_EN{slash}28-Pad4)">
+      <node ref="J1" pin="4" pinfunction="3.3V_EN/28" pintype="input"/>
+    </net>
+    <net code="7" name="unconnected-(J1-A0{slash}14-Pad34)">
+      <node ref="J1" pin="34" pinfunction="A0/14" pintype="bidirectional"/>
+    </net>
+    <net code="8" name="unconnected-(J1-A1{slash}15-Pad38)">
+      <node ref="J1" pin="38" pinfunction="A1/15" pintype="bidirectional"/>
+    </net>
+    <net code="9" name="unconnected-(J1-AUD_BCLK{slash}21-Pad50)">
+      <node ref="J1" pin="50" pinfunction="AUD_BCLK/21" pintype="bidirectional"/>
+    </net>
+    <net code="10" name="unconnected-(J1-AUD_IN{slash}8-Pad54)">
+      <node ref="J1" pin="54" pinfunction="AUD_IN/8" pintype="bidirectional"/>
+    </net>
+    <net code="11" name="unconnected-(J1-AUD_LRCLK{slash}20-Pad52)">
+      <node ref="J1" pin="52" pinfunction="AUD_LRCLK/20" pintype="bidirectional"/>
+    </net>
+    <net code="12" name="unconnected-(J1-AUD_MCLK{slash}23-Pad58)">
+      <node ref="J1" pin="58" pinfunction="AUD_MCLK/23" pintype="bidirectional"/>
+    </net>
+    <net code="13" name="unconnected-(J1-AUD_OUT{slash}7-Pad56)">
+      <node ref="J1" pin="56" pinfunction="AUD_OUT/7" pintype="bidirectional"/>
+    </net>
+    <net code="14" name="unconnected-(J1-BATT_VIN{slash}22-Pad49)">
+      <node ref="J1" pin="49" pinfunction="BATT_VIN/22" pintype="power_in"/>
+    </net>
+    <net code="15" name="unconnected-(J1-BOOT{slash}PROG-Pad11)">
+      <node ref="J1" pin="11" pinfunction="BOOT/PROG" pintype="input"/>
+    </net>
+    <net code="16" name="unconnected-(J1-CAN_RX{slash}30-Pad41)">
+      <node ref="J1" pin="41" pinfunction="CAN_RX/30" pintype="bidirectional"/>
+    </net>
+    <net code="17" name="unconnected-(J1-CAN_TX{slash}31-Pad43)">
+      <node ref="J1" pin="43" pinfunction="CAN_TX/31" pintype="bidirectional"/>
+    </net>
+    <net code="18" name="unconnected-(J1-D0{slash}4-Pad10)">
+      <node ref="J1" pin="10" pinfunction="D0/4" pintype="bidirectional"/>
+    </net>
+    <net code="19" name="unconnected-(J1-D1{slash}5-Pad18)">
+      <node ref="J1" pin="18" pinfunction="D1/5" pintype="bidirectional"/>
+    </net>
+    <net code="20" name="unconnected-(J1-G0{slash}40-Pad40)">
+      <node ref="J1" pin="40" pinfunction="G0/40" pintype="bidirectional"/>
+    </net>
+    <net code="21" name="unconnected-(J1-G1{slash}41-Pad42)">
+      <node ref="J1" pin="42" pinfunction="G1/41" pintype="bidirectional"/>
+    </net>
+    <net code="22" name="unconnected-(J1-G2{slash}42-Pad44)">
+      <node ref="J1" pin="44" pinfunction="G2/42" pintype="bidirectional"/>
+    </net>
+    <net code="23" name="unconnected-(J1-G3{slash}43-Pad46)">
+      <node ref="J1" pin="46" pinfunction="G3/43" pintype="bidirectional"/>
+    </net>
+    <net code="24" name="unconnected-(J1-G4{slash}44-Pad48)">
+      <node ref="J1" pin="48" pinfunction="G4/44" pintype="bidirectional"/>
+    </net>
+    <net code="25" name="unconnected-(J1-G5{slash}45-Pad73)">
+      <node ref="J1" pin="73" pinfunction="G5/45" pintype="bidirectional"/>
+    </net>
+    <net code="26" name="unconnected-(J1-G6{slash}6-Pad71)">
+      <node ref="J1" pin="71" pinfunction="G6/6" pintype="bidirectional"/>
+    </net>
+    <net code="27" name="unconnected-(J1-G7{slash}9-Pad69)">
+      <node ref="J1" pin="69" pinfunction="G7/9" pintype="bidirectional"/>
+    </net>
+    <net code="28" name="unconnected-(J1-G8{slash}26-Pad67)">
+      <node ref="J1" pin="67" pinfunction="G8/26" pintype="bidirectional"/>
+    </net>
+    <net code="29" name="unconnected-(J1-G9{slash}32-Pad65)">
+      <node ref="J1" pin="65" pinfunction="G9/32" pintype="bidirectional"/>
+    </net>
+    <net code="30" name="unconnected-(J1-G10{slash}33-Pad63)">
+      <node ref="J1" pin="63" pinfunction="G10/33" pintype="bidirectional"/>
+    </net>
+    <net code="31" name="unconnected-(J1-G11{slash}27-Pad8)">
+      <node ref="J1" pin="8" pinfunction="G11/27" pintype="bidirectional"/>
+    </net>
+    <net code="32" name="unconnected-(J1-I2C_INT{slash}29-Pad16)">
+      <node ref="J1" pin="16" pinfunction="I2C_INT/29" pintype="bidirectional"/>
+    </net>
+    <net code="33" name="unconnected-(J1-I2C_SCL1{slash}24-Pad53)">
+      <node ref="J1" pin="53" pinfunction="I2C_SCL1/24" pintype="bidirectional"/>
+    </net>
+    <net code="34" name="unconnected-(J1-I2C_SCL{slash}19-Pad14)">
+      <node ref="J1" pin="14" pinfunction="I2C_SCL/19" pintype="bidirectional"/>
+    </net>
+    <net code="35" name="unconnected-(J1-I2C_SDA1{slash}25-Pad51)">
+      <node ref="J1" pin="51" pinfunction="I2C_SDA1/25" pintype="bidirectional"/>
+    </net>
+    <net code="36" name="unconnected-(J1-I2C_SDA{slash}18-Pad12)">
+      <node ref="J1" pin="12" pinfunction="I2C_SDA/18" pintype="bidirectional"/>
+    </net>
+    <net code="37" name="unconnected-(J1-N{slash}C-Pad13)">
+      <node ref="J1" pin="13" pinfunction="N/C" pintype="no_connect"/>
+    </net>
+    <net code="38" name="unconnected-(J1-N{slash}C-Pad15)">
+      <node ref="J1" pin="15" pinfunction="N/C" pintype="no_connect"/>
+    </net>
+    <net code="39" name="unconnected-(J1-N{slash}C-Pad21)">
+      <node ref="J1" pin="21" pinfunction="N/C" pintype="no_connect"/>
+    </net>
+    <net code="40" name="unconnected-(J1-N{slash}C-Pad23)">
+      <node ref="J1" pin="23" pinfunction="N/C" pintype="no_connect"/>
+    </net>
+    <net code="41" name="unconnected-(J1-PWM0{slash}3-Pad32)">
+      <node ref="J1" pin="32" pinfunction="PWM0/3" pintype="bidirectional"/>
+    </net>
+    <net code="42" name="unconnected-(J1-PWM1{slash}2-Pad47)">
+      <node ref="J1" pin="47" pinfunction="PWM1/2" pintype="bidirectional"/>
+    </net>
+    <net code="43" name="unconnected-(J1-RESET{slash}ON_OFF-Pad6)">
+      <node ref="J1" pin="6" pinfunction="RESET/ON_OFF" pintype="input"/>
+    </net>
+    <net code="44" name="unconnected-(J1-RTC_3V_BATT-Pad72)">
+      <node ref="J1" pin="72" pinfunction="RTC_3V_BATT" pintype="power_in"/>
+    </net>
+    <net code="45" name="unconnected-(J1-SDIO_CMD{slash}37-Pad62)">
+      <node ref="J1" pin="62" pinfunction="SDIO_CMD/37" pintype="bidirectional"/>
+    </net>
+    <net code="46" name="unconnected-(J1-SDIO_DATA0{slash}35-Pad64)">
+      <node ref="J1" pin="64" pinfunction="SDIO_DATA0/35" pintype="bidirectional"/>
+    </net>
+    <net code="47" name="unconnected-(J1-SDIO_DATA1{slash}34-Pad66)">
+      <node ref="J1" pin="66" pinfunction="SDIO_DATA1/34" pintype="bidirectional"/>
+    </net>
+    <net code="48" name="unconnected-(J1-SDIO_DATA2{slash}39-Pad68)">
+      <node ref="J1" pin="68" pinfunction="SDIO_DATA2/39" pintype="bidirectional"/>
+    </net>
+    <net code="49" name="unconnected-(J1-SDIO_DATA3{slash}38-Pad70)">
+      <node ref="J1" pin="70" pinfunction="SDIO_DATA3/38" pintype="bidirectional"/>
+    </net>
+    <net code="50" name="unconnected-(J1-SDIO_SCK{slash}36-Pad60)">
+      <node ref="J1" pin="60" pinfunction="SDIO_SCK/36" pintype="bidirectional"/>
+    </net>
+    <net code="51" name="unconnected-(J1-SPI_CIPO{slash}12-Pad61)">
+      <node ref="J1" pin="61" pinfunction="SPI_CIPO/12" pintype="bidirectional"/>
+    </net>
+    <net code="52" name="unconnected-(J1-SPI_COPI{slash}11-Pad59)">
+      <node ref="J1" pin="59" pinfunction="SPI_COPI/11" pintype="bidirectional"/>
+    </net>
+    <net code="53" name="unconnected-(J1-SPI_CS{slash}10-Pad55)">
+      <node ref="J1" pin="55" pinfunction="SPI_CS/10" pintype="bidirectional"/>
+    </net>
+    <net code="54" name="unconnected-(J1-SPI_SCK{slash}13-Pad57)">
+      <node ref="J1" pin="57" pinfunction="SPI_SCK/13" pintype="bidirectional"/>
+    </net>
+    <net code="55" name="unconnected-(J1-UART_RX1{slash}0-Pad19)">
+      <node ref="J1" pin="19" pinfunction="UART_RX1/0" pintype="bidirectional"/>
+    </net>
+    <net code="56" name="unconnected-(J1-UART_RX2{slash}16-Pad20)">
+      <node ref="J1" pin="20" pinfunction="UART_RX2/16" pintype="bidirectional"/>
+    </net>
+    <net code="57" name="unconnected-(J1-UART_TX1{slash}1-Pad17)">
+      <node ref="J1" pin="17" pinfunction="UART_TX1/1" pintype="bidirectional"/>
+    </net>
+    <net code="58" name="unconnected-(J1-UART_TX2{slash}17-Pad22)">
+      <node ref="J1" pin="22" pinfunction="UART_TX2/17" pintype="bidirectional"/>
+    </net>
+    <net code="59" name="unconnected-(J1-USBHOST_D+-Pad35)">
+      <node ref="J1" pin="35" pinfunction="USBHOST_D+" pintype="bidirectional"/>
+    </net>
+    <net code="60" name="unconnected-(J1-USBHOST_D--Pad37)">
+      <node ref="J1" pin="37" pinfunction="USBHOST_D-" pintype="bidirectional"/>
+    </net>
+    <net code="61" name="unconnected-(J1-USB_D+-Pad3)">
+      <node ref="J1" pin="3" pinfunction="USB_D+" pintype="bidirectional"/>
+    </net>
+    <net code="62" name="unconnected-(J1-USB_D--Pad5)">
+      <node ref="J1" pin="5" pinfunction="USB_D-" pintype="bidirectional"/>
+    </net>
+    <net code="63" name="unconnected-(J1-USB_VIN{slash}V_USB-Pad9)">
+      <node ref="J1" pin="9" pinfunction="USB_VIN/V_USB" pintype="power_in"/>
+    </net>
+    <net code="64" name="unconnected-(J2-CC1-PadA5)">
+      <node ref="J2" pin="A5" pinfunction="CC1" pintype="bidirectional"/>
+    </net>
+    <net code="65" name="unconnected-(J2-CC2-PadB5)">
+      <node ref="J2" pin="B5" pinfunction="CC2" pintype="bidirectional"/>
+    </net>
+    <net code="66" name="unconnected-(J2-D+-PadA6)">
+      <node ref="J2" pin="A6" pinfunction="D+" pintype="bidirectional"/>
+    </net>
+    <net code="67" name="unconnected-(J2-D+-PadB6)">
+      <node ref="J2" pin="B6" pinfunction="D+" pintype="bidirectional"/>
+    </net>
+    <net code="68" name="unconnected-(J2-D--PadA7)">
+      <node ref="J2" pin="A7" pinfunction="D-" pintype="bidirectional"/>
+    </net>
+    <net code="69" name="unconnected-(J2-D--PadB7)">
+      <node ref="J2" pin="B7" pinfunction="D-" pintype="bidirectional"/>
+    </net>
+    <net code="70" name="unconnected-(J2-SBU1-PadA8)">
+      <node ref="J2" pin="A8" pinfunction="SBU1" pintype="bidirectional"/>
+    </net>
+    <net code="71" name="unconnected-(J2-SBU2-PadB8)">
+      <node ref="J2" pin="B8" pinfunction="SBU2" pintype="bidirectional"/>
+    </net>
+    <net code="72" name="unconnected-(J2-SHIELD-PadS1)">
+      <node ref="J2" pin="S1" pinfunction="SHIELD" pintype="passive"/>
+    </net>
+    <net code="73" name="unconnected-(R1-Pad1)">
+      <node ref="R1" pin="1" pintype="passive"/>
+    </net>
+    <net code="74" name="unconnected-(R1-Pad2)">
+      <node ref="R1" pin="2" pintype="passive"/>
+    </net>
+    <net code="75" name="unconnected-(SW1-PadA)">
+      <node ref="SW1" pin="A" pinfunction="A" pintype="passive"/>
+    </net>
+    <net code="76" name="unconnected-(SW1-PadB)">
+      <node ref="SW1" pin="B" pinfunction="B" pintype="passive"/>
+    </net>
+    <net code="77" name="unconnected-(SW1-PadC)">
+      <node ref="SW1" pin="C" pinfunction="C" pintype="passive"/>
+    </net>
+    <net code="78" name="unconnected-(SW1-S1-Pad1)">
+      <node ref="SW1" pin="1" pinfunction="S1" pintype="passive"/>
+    </net>
+    <net code="79" name="unconnected-(SW1-S2-Pad2)">
+      <node ref="SW1" pin="2" pinfunction="S2" pintype="passive"/>
+    </net>
+    <net code="80" name="unconnected-(U1-A0-Pad1)">
+      <node ref="U1" pin="1" pinfunction="A0" pintype="input"/>
+    </net>
+    <net code="81" name="unconnected-(U1-A1-Pad2)">
+      <node ref="U1" pin="2" pinfunction="A1" pintype="input"/>
+    </net>
+    <net code="82" name="unconnected-(U1-A2-Pad21)">
+      <node ref="U1" pin="21" pinfunction="A2" pintype="input"/>
+    </net>
+    <net code="83" name="unconnected-(U1-GND-Pad12)">
+      <node ref="U1" pin="12" pinfunction="GND" pintype="power_in"/>
+    </net>
+    <net code="84" name="unconnected-(U1-SC0-Pad5)">
+      <node ref="U1" pin="5" pinfunction="SC0" pintype="output"/>
+    </net>
+    <net code="85" name="unconnected-(U1-SC1-Pad7)">
+      <node ref="U1" pin="7" pinfunction="SC1" pintype="output"/>
+    </net>
+    <net code="86" name="unconnected-(U1-SC2-Pad9)">
+      <node ref="U1" pin="9" pinfunction="SC2" pintype="output"/>
+    </net>
+    <net code="87" name="unconnected-(U1-SC3-Pad11)">
+      <node ref="U1" pin="11" pinfunction="SC3" pintype="output"/>
+    </net>
+    <net code="88" name="unconnected-(U1-SC4-Pad14)">
+      <node ref="U1" pin="14" pinfunction="SC4" pintype="output"/>
+    </net>
+    <net code="89" name="unconnected-(U1-SC5-Pad16)">
+      <node ref="U1" pin="16" pinfunction="SC5" pintype="output"/>
+    </net>
+    <net code="90" name="unconnected-(U1-SC6-Pad18)">
+      <node ref="U1" pin="18" pinfunction="SC6" pintype="output"/>
+    </net>
+    <net code="91" name="unconnected-(U1-SC7-Pad20)">
+      <node ref="U1" pin="20" pinfunction="SC7" pintype="output"/>
+    </net>
+    <net code="92" name="unconnected-(U1-SCL-Pad22)">
+      <node ref="U1" pin="22" pinfunction="SCL" pintype="input"/>
+    </net>
+    <net code="93" name="unconnected-(U1-SD0-Pad4)">
+      <node ref="U1" pin="4" pinfunction="SD0" pintype="bidirectional"/>
+    </net>
+    <net code="94" name="unconnected-(U1-SD1-Pad6)">
+      <node ref="U1" pin="6" pinfunction="SD1" pintype="bidirectional"/>
+    </net>
+    <net code="95" name="unconnected-(U1-SD2-Pad8)">
+      <node ref="U1" pin="8" pinfunction="SD2" pintype="bidirectional"/>
+    </net>
+    <net code="96" name="unconnected-(U1-SD3-Pad10)">
+      <node ref="U1" pin="10" pinfunction="SD3" pintype="bidirectional"/>
+    </net>
+    <net code="97" name="unconnected-(U1-SD4-Pad13)">
+      <node ref="U1" pin="13" pinfunction="SD4" pintype="bidirectional"/>
+    </net>
+    <net code="98" name="unconnected-(U1-SD5-Pad15)">
+      <node ref="U1" pin="15" pinfunction="SD5" pintype="bidirectional"/>
+    </net>
+    <net code="99" name="unconnected-(U1-SD6-Pad17)">
+      <node ref="U1" pin="17" pinfunction="SD6" pintype="bidirectional"/>
+    </net>
+    <net code="100" name="unconnected-(U1-SD7-Pad19)">
+      <node ref="U1" pin="19" pinfunction="SD7" pintype="bidirectional"/>
+    </net>
+    <net code="101" name="unconnected-(U1-SDA-Pad23)">
+      <node ref="U1" pin="23" pinfunction="SDA" pintype="bidirectional"/>
+    </net>
+    <net code="102" name="unconnected-(U1-VCC-Pad24)">
+      <node ref="U1" pin="24" pinfunction="VCC" pintype="power_in"/>
+    </net>
+    <net code="103" name="unconnected-(U1-~{RESET}-Pad3)">
+      <node ref="U1" pin="3" pinfunction="~{RESET}" pintype="input"/>
+    </net>
+  </nets>
+</export>

@@ -1,0 +1,18 @@
+(footprint "standoff_9774025151R" (version 20221018) (generator pcbnew)
+  (layer "F.Cu")
+  (attr through_hole)
+  (fp_text reference "REF**" (at 0 -2.75 unlocked) (layer "F.SilkS") hide
+      (effects (font (size 1 1) (thickness 0.1)))
+    (tstamp ed68d18f-066a-4305-b27d-d805a84dbedf)
+  )
+  (fp_text value "standoff_9774025151R" (at 0 -9.75 unlocked) (layer "F.Fab") hide
+      (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 489d31ce-eee1-4594-aa12-b67cca753408)
+  )
+  (pad "1" thru_hole circle (at 0 0) (size 6 6) (drill 3.7) (layers "*.Cu" "*.Mask") (tstamp eee93fb9-1857-4731-8d89-b6779a2ef148))
+  (model "${KIPRJMOD}/3d_models/9774025151R (rev1).stp"
+    (offset (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 0))
+  )
+)

@@ -26,10 +26,10 @@ void Module::init(Track** tracks_in)
     display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
     display.clearDisplay(); // clear the buffer
 
-    display.setCursor(0, 0);
-    display.setTextSize(2);
-    display.setTextColor(SSD1306_WHITE);
-    display.print("Started!");
+    // display.setCursor(0, 0);
+    // display.setTextSize(2);
+    // display.setTextColor(SSD1306_WHITE);
+    // display.print("Started!");
 
     display.display(); // display the empty screen
 }

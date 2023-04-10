@@ -1,4 +1,4 @@
-How to build PlatformIO based project
+How to build PlatformIO based project (to be replaced)
 =====================================
 
 1. [Install PlatformIO Core](https://docs.platformio.org/page/core.html)
