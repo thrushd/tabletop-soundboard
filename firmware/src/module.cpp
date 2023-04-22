@@ -36,13 +36,16 @@ void Module::init(Track** tracks_in)
 
 void Module::update(int new_scene_index)
 {
+    // Serial.printf("in module %d\n", module_number);
     // a scene has not been selected yet
     if (new_scene_index < 0) {
+        // Serial.println("1");
         return;
     }
 
     // new scene checks
     if (new_scene_index != scene_index) {
+        // Serial.println("2");
         scene_index = new_scene_index;
         skip = false;
         play_flag = false;
@@ -50,27 +53,37 @@ void Module::update(int new_scene_index)
 
         // check if the filename is actually populated, min 5 characters for a valid file
         if (strlen(tracks[scene_index][module_number].filename) < 5) {
+            // Serial.println("3");
             skip = true;
             display_empty();
             return;
         }
         // check if the filename is actually on the SD card
         if (!SD.exists(tracks[scene_index][module_number].filename)) {
+            // Serial.println("4");
             skip = true;
             display_file_not_found();
             return;
         }
+        // Serial.println("5");
 
         // update the track duration
         // need to play briefly since lengthMillis only returns while playing
+        Serial.println("1");
         play_sd->play(tracks[scene_index][module_number].filename);
         // TODO, this seems hacky and might be bad downstream
-        while (!play_sd->isPlaying()) { } // block until the wav header is parsed, otherwise lengthMillis returns nothing
+        Serial.println("2");
+        while (!play_sd->isPlaying()) {} // block until the wav header is parsed, otherwise lengthMillis returns nothing
+        Serial.println("3");
         track_duration = play_sd->lengthMillis();
+        Serial.println("4");
         play_sd->stop();
+
+        // track_duration = 1000000;
 
         // TODO the loop flag causes tracks to start playing immediately, even when play is set to false
 
+        // Serial.println("6");
         // set flags
         if (tracks[scene_index][module_number].play) {
             play_flag = true;

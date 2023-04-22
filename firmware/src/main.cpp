@@ -13,6 +13,12 @@
 #include <SPI.h>
 #include <SerialFlash.h>
 
+#include <Audio.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <SD.h>
+#include <SerialFlash.h>
+
 // GUItool: begin automatically generated code
 AudioPlaySdWav           play_sd_wav_1;     //xy=765.0000152587891,499.0000190734863
 AudioPlaySdWav           play_sd_wav_2;     //xy=765.0000152587891,539.0000228881836
@@ -28,8 +34,8 @@ AudioMixer4              right_mixer_1;         //xy=1034.0001907348633,732.0000
 AudioMixer4              left_mixer_0;         //xy=1036.0000305175781,469.000093460083
 AudioMixer4              right_final_mixer;         //xy=1293.0000381469727,646.0000190734863
 AudioMixer4              left_final_mixer;         //xy=1295.0000381469727,563.0000953674316
-AudioOutputUSB           usb1;           //xy=1522,655
-AudioOutputPT8211        pt8211_1;       //xy=1524,598
+AudioOutputPWM           pwm1;           //xy=1507.7272644042969,696.8181762695312
+AudioOutputUSB           usb1;           //xy=1522.9999771118164,582.9999914169312
 AudioConnection          patchCord1(play_sd_wav_1, 0, left_mixer_0, 1);
 AudioConnection          patchCord2(play_sd_wav_1, 1, right_mixer_0, 1);
 AudioConnection          patchCord3(play_sd_wav_2, 0, left_mixer_0, 2);
@@ -50,44 +56,25 @@ AudioConnection          patchCord17(right_mixer_0, 0, right_final_mixer, 0);
 AudioConnection          patchCord18(left_mixer_1, 0, left_final_mixer, 1);
 AudioConnection          patchCord19(right_mixer_1, 0, right_final_mixer, 1);
 AudioConnection          patchCord20(left_mixer_0, 0, left_final_mixer, 0);
-AudioConnection          patchCord21(right_final_mixer, 0, pt8211_1, 1);
-AudioConnection          patchCord22(right_final_mixer, 0, usb1, 1);
-AudioConnection          patchCord23(left_final_mixer, 0, pt8211_1, 0);
-AudioConnection          patchCord24(left_final_mixer, 0, usb1, 0);
+AudioConnection          patchCord21(right_final_mixer, 0, usb1, 1);
+AudioConnection          patchCord22(left_final_mixer, 0, usb1, 0);
 // GUItool: end automatically generated code
 
-/* hardware definition
-
-Main display connections
-VCC -> VIN
-GND -> GND
-DIN -> 11 (MOSI0)
-CLK -> 13 (SCK0)
-CS  -> 30
-DC  -> 31
-RST -> 32
-BL  -> NC
-
-I2C
-SCL0: 19
-SDA0: 18
-*/
-
 // screen
-#define TFT_CS 30
-#define TFT_RST 32 // Or set to -1 and connect to RESET pin
-#define TFT_DC 31
+#define TFT_CS 10
+#define TFT_RST 5 // Or set to -1 and connect to RESET pin
+#define TFT_DC 4
 
 // encoder knob
-#define ENCODER_BUTTON_PIN 35
-#define ENCODER_A_PIN 33
-#define ENCODER_B_PIN 34
+#define ENCODER_BUTTON_PIN 33
+#define ENCODER_A_PIN 26
+#define ENCODER_B_PIN 32
 #define KNOB_SCALE 4
 
-#define MAIN_BUTTON_PIN 36
+#define MAIN_BUTTON_PIN 9
 
 // module buttons
-const int button_pins[] = { 21, 20, 17, 16, 15, 14, 39, 29 };
+const int button_pins[] = { 6, 45, 44, 43, 42, 41, 40, 27 };
 
 char config_filename[] = { "config.toml" };
 char startup_gif_filename[] = { "startup.gif" };
@@ -125,14 +112,14 @@ OneButton main_button = OneButton(MAIN_BUTTON_PIN, true, true);
 Encoder knob(ENCODER_A_PIN, ENCODER_B_PIN);
 
 Module modules[] = {
-    { 0, button_pins[0], &play_sd_wav_0, &left_mixer_0, &right_mixer_0, &Wire, &knob },
-    { 1, button_pins[1], &play_sd_wav_1, &left_mixer_0, &right_mixer_0, &Wire, &knob },
-    { 2, button_pins[2], &play_sd_wav_2, &left_mixer_0, &right_mixer_0, &Wire, &knob },
-    { 3, button_pins[3], &play_sd_wav_3, &left_mixer_0, &right_mixer_0, &Wire, &knob },
-    { 4, button_pins[4], &play_sd_wav_4, &left_mixer_1, &right_mixer_1, &Wire, &knob },
-    { 5, button_pins[5], &play_sd_wav_5, &left_mixer_1, &right_mixer_1, &Wire, &knob },
-    { 6, button_pins[6], &play_sd_wav_6, &left_mixer_1, &right_mixer_1, &Wire, &knob },
-    { 7, button_pins[7], &play_sd_wav_7, &left_mixer_1, &right_mixer_1, &Wire, &knob }
+    { 0, button_pins[0], &play_sd_wav_0, &left_mixer_0, &right_mixer_0, &Wire1, &knob },
+    { 1, button_pins[1], &play_sd_wav_1, &left_mixer_0, &right_mixer_0, &Wire1, &knob },
+    { 2, button_pins[2], &play_sd_wav_2, &left_mixer_0, &right_mixer_0, &Wire1, &knob },
+    { 3, button_pins[3], &play_sd_wav_3, &left_mixer_0, &right_mixer_0, &Wire1, &knob },
+    { 4, button_pins[4], &play_sd_wav_4, &left_mixer_1, &right_mixer_1, &Wire1, &knob },
+    { 5, button_pins[5], &play_sd_wav_5, &left_mixer_1, &right_mixer_1, &Wire1, &knob },
+    { 6, button_pins[6], &play_sd_wav_6, &left_mixer_1, &right_mixer_1, &Wire1, &knob },
+    { 7, button_pins[7], &play_sd_wav_7, &left_mixer_1, &right_mixer_1, &Wire1, &knob }
 };
 
 // number of entries in a given table
@@ -539,6 +526,7 @@ void update_main_display()
 // select scene
 static void handle_encoder_single()
 {
+    Serial.println("Encoder button clicked!");
     // if encoder is pressed, check if selection actually changes the scene
     if (selection != active_scene) {
         // need to stop playing all tracks
@@ -559,6 +547,7 @@ static void handle_encoder_single()
 // stop playing
 static void handle_main_single()
 {
+    Serial.println("Stop button clicked!");
     // stop playing all tracks
     for (int i = 0; i < N_MODULES; i++) {
         modules[i].stop();
@@ -607,9 +596,10 @@ void setup()
 {
     Serial.begin(9600);
     Wire.begin();
+    Wire1.begin();
     AudioMemory(32);
     // wait for serial to open
-    // while (!Serial) { }
+    while (!Serial) { }
 
     Serial.println();
     Serial.println("starting this heckin trainwreck now");
@@ -646,13 +636,18 @@ void setup()
     // init display
     main_display.init(MAIN_SCREEN_WIDTH, MAIN_SCREEN_HEIGHT);
 
+    main_display.setRotation(2);
+
     // init gifplayer and play the startup animation
     init_player(&main_display);
     play_gif(startup_gif_filename);
 
+    Serial.println("Played!");
+
     for (int i = 0; i < N_MODULES; i++) {
         modules[i].init(module_tracks);
     }
+    Serial.println("setup finished!");
 }
 
 // le loop
@@ -683,6 +678,7 @@ void loop()
         } else if (selection < 0) {
             selection = 0;
         }
+        // Serial.println(selection);
         // reset diff
         knob_diff = 0;
         update_main_display();
@@ -696,4 +692,6 @@ void loop()
     // if (millis() % 500 > 400){
     //     Serial.printf("Audio memory usage: %d/%d\n", AudioMemoryUsage(), AudioMemoryUsageMax());
     // }
+
+    // Serial.println(millis());
 }
