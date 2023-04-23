@@ -1,0 +1,2 @@
+# Example SD card
+This directory is meant to give you an example for how the micro SD card should be set up. Simply copy the contents of this folder to a card and slot it in to explore how the device works.
