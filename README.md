@@ -6,7 +6,7 @@ A simple, compact, easy to use device to add music, ambiance, and sound effects 
 All data is given to the device through a micro SD card. Audio files, the config, and gif are all placed in the root directory with no sub folders.
 
 ### Listening
-There are two audio outputs on the device, USB audio and a standard 3.5mm jack. For the USB audio, you can easily loop it back to play through your computer speakers, a connected bluetooth speaker, etc. Instructions for setting up this loopback can be found [here](https://www.addictivetips.com/windows-tips/output-mic-sound-to-speakers-windows-10/). 
+There are two audio outputs on the device, USB audio and a standard 3.5mm jack. For the USB audio, you can easily loop it back to play through your computer speakers, a connected bluetooth speaker, etc. Instructions for setting up this loopback can be found [here](https://www.addictivetips.com/windows-tips/output-mic-sound-to-speakers-windows-10/) for windows. 
 
 ### Scenes and Settings
 Sounds are organized into 'scenes', with each scene containing up to 8 tracks (sound files). This organization is set with a configuration file, written in [TOML](https://toml.io/en/). There are three main settings, which can be set at three different levels: global, scene, and track level. Priority for settings is always given to lower levels, so a track level setting will always override a scene level setting, etc. If a setting is not given to a scene or track it will use the next highest defined setting.
@@ -93,12 +93,17 @@ tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
 ### Format
 The audio is handled by the teensy audio library, which only supports a certain format (16 bit PCM, 44100 Hz WAV files). Since most online resources provide all kinds of formats a simple tool is provided to convert these to the proper WAV format. It can be found under `/audio-convert`.
 
+### Editing
+[Audacity](https://www.audacityteam.org/) is a great free, open source, cross platform audio editor. It can be used to trim tracks you find online, add fade in/out, and other effects. 
+
+[Getting started](https://manual.audacityteam.org/quick_help.html)
+
 ### Sources
 - [Tabletop Audio](https://tabletopaudio.com/) - Good for longer, ambient tracks
 - [Battlebards](https://battlebards.com/#/tracks) - Tons of variety, music, soundscapes, effects, voiceovers, but it is paid
 - [Ambient Mixer RPG Category](https://rpg.ambient-mixer.com/) - Ambiance, user curated collections of tracks, no easy download, but there are sources given for most tracks
-- [Freesound](https://freesound.org/) - Free, huge variety
-- [SoundBible](https://soundbible.com/) - Free, decent collection, WAV format
+- [Freesound](https://freesound.org/) - Free, huge variety, need an account to download
+- [SoundBible](https://soundbible.com/) - Free, decent collection, WAV format (need to right click and `save link as...` to actually download)
 - [mixkit](https://mixkit.co/free-sound-effects/) - Free, decent collection, WAV format
 - [pixabay](https://pixabay.com/sound-effects/) - Free, music and sound effects
 

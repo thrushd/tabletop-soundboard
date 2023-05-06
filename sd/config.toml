@@ -10,82 +10,89 @@ startup = "startup.gif"
 # Create fixed tracks that don't change depending on which scene you are in
 # If track.n is declared in a scene it is ignored and overriden with the below items
 [fixed.7]
-filename = "dj_airhorn.wav"
-name = "Nat 20"
-gain = 1.0
-[fixed.8]
-filename = "sad_trombone.wav"
+filename = "effect-fail-jingle.wav"
 name = "Nat 1"
 gain = 1.0
+[fixed.8]
+filename = "effect-dj-airhorn.wav"
+name = "Nat 20"
+gain = 1.0
 
+# Create scenes
 [scenes.tavern]
-name = "Old Ivey Tavern"  # rename the scene if desired
+name = "Old Ivey Tavern"  # rename the scene if desired, otherwise the scene name will be displayed
 [tavern.1]  # add a track
-filename = "tavern_sounds_1.wav"  # specify the filename
+filename = "ambiance-british-pub.wav"  # specify the filename
 name = "Tavern Sounds"  # change the displayed name if you want
-play = true  # set if it should play on scene start
+gain = 0.6  # set a non default volume gain
 loop = true  # set if the track should loop or not
-gain = 0.5  # set a non default volume gain
+play = true  # set if it should play on scene start
 [tavern.2]  # add another track
-filename = "piano_3.wav"
-name = "Piano"
-play = true
-gain = 0.75
-[tavern.3]  # this track is fine with all of the default settings, no need to override
-filename = "bang.wav"
+filename = "music-lute-greensleeves.wav"
+name = "Lute"
+gain = 0.7
+loop = true
+[tavern.3]
+filename = "effect-door-creaky.wav"
 
 [scenes.camp]
-gain = 1.0
+name = "Camp"
 [camp.1]
-filename = "wolf_howl.wav"
+filename = "ambiance-crackling-fire.wav"
+gain = 0.4
+loop = true
+play = true
 [camp.2]
-filename = "wind.wav"
-gain = 0.5
+filename = "ambiance-rain-light.wav"
+gain = 0.6
 loop = true
-play = true
 [camp.3]
-filename = "crackling_campfire.wav"
-gain = 0.75
+filename = "ambiance-rain-heavy-wind.wav"
+gain = 0.8
+loop = true
+
+[scenes.stormy_woods]
+name = "Stormy Woods"
+[stormy_woods.1]
+name = "Heavy Wind and Rain"
+filename = "ambiance-rain-heavy-wind.wav"
+gain = 0.4
 loop = true
 play = true
-
-# If defalt settings are fine it can get very minimal, just a list of the file names
-[scenes.mountain]
+[stormy_woods.2]
+name = "Thunderstorm"
+filename = "ambiance-thunderstorm.wav"
+gain = 0.6
 loop = true
-tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
+[stormy_woods.3]
+filename = "effect-bell-tolling"
+gain = 0.8
+[stormy_woods.4]
+filename = "effect-raven-croak.wav"
+gain = 0.8
+[stormy_woods.5]
+filename = "effect-thunder-clap.wav"
+gain = 1.0
 
-[scenes.cliff]
-name = "Cliff"
-tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
+[scenes.mine]
+name = "Mine Dungeon"
+[mine.1]
+filename = "ambiance-water-drops.wav"
+gain = 0.3
+loop = true
+play = true
+[mine.2]
+filename = "ambiance-waterfall-large.wav"
+gain = 0.7
+loop = true
+[mine.3]
+filename = "effect-door-creaky.wav"
+[mine.4]
+name = "Magic Success"
+filename = "effect-magic-appear.wav"
 
-[scenes.field]
-name = "Field"
-tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
-
-[scenes.forest]
-name = "Forest (spooky)"
-tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
-
-[scenes.forest_2]
-name = "Forest (calm)"
-tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
-
-[scenes.forest_3]
-name = "Scene a new one"
-tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
-
-[scenes.forest_4]
-name = "Brawl"
-tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
-
-[scenes.forest_5]
-name = "Lewd bedroom noises"
-tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
-
-[scenes.forest_6]
-name = "Massive Meaty Man Tits"
-tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
-
-[scenes.forest_7]
-name = "Miniscule Muscular Mistriss Bits"
-tracks = ["mountain_ambiance.wav", "avalanch.wav", "yetti_growl.wav"]
+# If the defalt settings are fine it can get very minimal, just a list of the file names
+[scenes.battle]
+name = "Battle"
+gain = 1.0
+tracks = ["battle-rat-battle.wav", "effect-sword-clash.wav", "effect-knife-throw.wav", "effect-arrow-shoot.wav", "effect-magic-explosion.wav"]
